@@ -37,7 +37,7 @@ public class CameraScript : MonoBehaviour
         Nodes.Add((startPos, 1));
         for (int i = 0; i < ListHead.transform.childCount; i++)
         {
-            Nodes.Add((ListHead.transform.GetChild(i), ListHead.transform.GetChild(i).gameObject.GetComponent<TimeToReach>().time));
+            //Nodes.Add((ListHead.transform.GetChild(i), ListHead.transform.GetChild(i).gameObject.GetComponent<TimeToReach>().time));
         }
 
     }
@@ -68,7 +68,7 @@ public class CameraScript : MonoBehaviour
             Nodes.RemoveRange(1, Nodes.Count - 1);
             for (int i = 0; i < ListHead.transform.childCount; i++)
             {
-                Nodes.Add((ListHead.transform.GetChild(i), ListHead.transform.GetChild(i).gameObject.GetComponent<TimeToReach>().time));
+                //Nodes.Add((ListHead.transform.GetChild(i), ListHead.transform.GetChild(i).gameObject.GetComponent<TimeToReach>().time));
             }
         }
     }
