@@ -12,10 +12,13 @@ public class ObjFromFile : MonoBehaviour
     private void Start()
     {
         //make path match matterport irectory
-        string fullPath = Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/" + objFile + "/" + objFile + ".obj";
+        string fullObjPath = Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/" + objFile + "/" + objFile + ".obj";
+        string fullMtlPath = Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/" + objFile + "/" + objFile + ".mtl";
         if (loadedObject != null)
             Destroy(loadedObject);
-        loadedObject = new OBJLoader().Load(fullPath);
+        loadedObject = new OBJLoader().Load(fullObjPath, fullMtlPath);
+        loadedObject.transform.Rotate(-90, 0, 0);
+        loadedObject.transform.position = new Vector3(0, 0, 0);
 
     }
 
