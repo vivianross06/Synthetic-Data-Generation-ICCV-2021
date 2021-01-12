@@ -5,18 +5,17 @@ using UnityEngine;
 public class ObjFromFile : MonoBehaviour
 {
     public string house; //17DRP5sb8fy
-    public string objFile; //bed1a77d92d64f5cbbaaae4feed64ec1
     string error = string.Empty;
     GameObject loadedObject;
 
     private void Start()
     {
-        //make path match matterport irectory
-        string fullObjPath = Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/" + objFile + "/" + objFile + ".obj";
-        string fullMtlPath = Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/" + objFile + "/" + objFile + ".mtl";
+        string[] dir = Directory.GetDirectories(Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/");
+        string[] folders = dir[0].Split('/');
+        string fullPath = dir[0] + "/" + folders[folders.Length - 1];
         if (loadedObject != null)
             Destroy(loadedObject);
-        loadedObject = new OBJLoader().Load(fullObjPath, fullMtlPath);
+        loadedObject = new OBJLoader().Load(fullPath+".obj", fullPath+".mtl");
         loadedObject.transform.Rotate(-90, 0, 0);
         loadedObject.transform.position = new Vector3(0, 0, 0);
 
@@ -35,7 +34,7 @@ public class ObjFromFile : MonoBehaviour
             {
                 error = "File doesn't exist.";
             }else{
-                if(loadedObject != null)            
+                if(loadedObject != null)
                     Destroy(loadedObject);
                 loadedObject = new OBJLoader().Load(fullPath);
                 error = string.Empty;
