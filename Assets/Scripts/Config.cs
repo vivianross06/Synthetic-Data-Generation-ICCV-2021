@@ -7,6 +7,5 @@ namespace MatterportUnity
     public class Config
     {
         public static string MATTERPORT_HOME = "/matterport/"; //TODO: Set path to matterport data
-        //TEST: changing lalala
     }
 }
