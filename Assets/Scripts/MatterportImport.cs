@@ -1,8 +1,9 @@
 ﻿using Dummiesman;
 using System.IO;
 using UnityEngine;
+using MatterportUnity;
 
-public class ObjFromFile : MonoBehaviour
+public class MatterportImport : MonoBehaviour
 {
     public string house; //17DRP5sb8fy
     string error = string.Empty;
@@ -10,7 +11,8 @@ public class ObjFromFile : MonoBehaviour
 
     private void Start()
     {
-        string[] dir = Directory.GetDirectories(Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/");
+        string[] dir = Directory.GetDirectories(Config.MATTERPORT_HOME + house + "/matterport_mesh/");
+        //string[] dir = Directory.GetDirectories(Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/");
         string[] folders = dir[0].Split('/');
         string fullPath = dir[0] + "/" + folders[folders.Length - 1];
         if (loadedObject != null)
