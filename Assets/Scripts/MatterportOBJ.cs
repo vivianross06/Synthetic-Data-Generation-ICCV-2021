@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using MatterportUnity;
 
-public class MatterportImport : MonoBehaviour
+public class MatterportOBJ : MonoBehaviour
 {
     public string house; //17DRP5sb8fy
     string error = string.Empty;
