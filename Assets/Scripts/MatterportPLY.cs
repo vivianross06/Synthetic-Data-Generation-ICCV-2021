@@ -12,7 +12,7 @@ public class MatterportPLY : MonoBehaviour
         PlyLoader loader = new PlyLoader();
         string path = Config.MATTERPORT_HOME + house + "/house_segmentations/" + house + ".ply";
         //Mesh [] mesh = loader.load("2PTC_EI_bs_1.ply");
-        Mesh[] mesh = loader.load(Application.dataPath + "/../../matterport/17DRP5sb8fy/house_segmentations/17DRP5sb8fy.ply");
+        Mesh[] mesh = loader.load(path);
 
         GameObject parent = new GameObject("plyObject");
         for (int i = 0; i != mesh.Length; ++i)
