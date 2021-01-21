@@ -20,6 +20,7 @@ public class MatterportOBJ : MonoBehaviour
         loadedObject = new OBJLoader().Load(fullPath+".obj", fullPath+".mtl");
         loadedObject.transform.Rotate(-90, 0, 0);
         loadedObject.transform.position = new Vector3(0, 0, 0);
+        loadedObject.transform.localScale = new Vector3(1, 1, 1);
 
     }
 
