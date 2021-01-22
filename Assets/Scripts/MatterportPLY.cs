@@ -23,7 +23,7 @@ public class MatterportPLY : MonoBehaviour
             MeshFilter mf = g.AddComponent<MeshFilter>();
             mf.mesh = mesh[i];
             MeshRenderer mr = g.AddComponent<MeshRenderer>();
-            mr.material = new Material(Shader.Find("Particles/Standard Unlit"));
+            mr.material = new Material(Shader.Find("Custom/VertexColors"));
         }
         parent.transform.Rotate(-90, 0, 0);
     }

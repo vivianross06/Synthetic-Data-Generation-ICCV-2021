@@ -56,6 +56,22 @@ public class PlyLoader
         }
     }
 
+    private int getSemanticColor(int category_id) {
+
+        //Instead of parsing the .tsv files every time, parse once at the beginning and use a dictionary map category ids to semantic colors.
+
+        //string filename = Application.dataPath + "/MatterportMetadata/category_mapping.tsv";
+        //String[] content = File.ReadAllLines(filename);
+
+        /*var lls = new List<List<string>>();
+        for (int i = 0; i < content.First().Split('\t').Length; i++)
+        {
+            lls.Add(content.Select(x => x.Split('\t')[i]).ToList());
+        }*/
+        return 1;
+
+    }
+
     public Mesh[] load(string filename)
     {
         if (File.Exists(filename))
@@ -287,7 +303,6 @@ public class PlyLoader
                     uvs = new List<Vector2>();
                     num_local = 0;
                 }
-
                 for (int i = 0; i != num_faces; ++i)
                 {
                     int nj = 0; //uchar
@@ -334,27 +349,8 @@ public class PlyLoader
                         }
                         b = c;
                     }
-                    if (num_local >= 65530 || i + 1 == num_faces)
-                    {
-                        Mesh mesh = new Mesh();
-                        meshes.Add(mesh);
-                        //Debug.Log("vertices=" + vertices.Count + " normals=" + normals.Count + " uvs=" + uvs.Count + " colors=" + colors.Count);
-                        mesh.vertices = vertices.ToArray();
-                        if (!no_uv) mesh.uv = uvs.ToArray();
-                        if (!no_nxyz) mesh.normals = normals.ToArray();
-                        if (!no_rgb) mesh.colors32 = colors.ToArray();
-                        mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0, true);
-                        mesh.name = "mesh";
-
-                        indices = new List<int>();
-                        global_to_local = new Dictionary<int, int>();
-                        vertices = new List<Vector3>();
-                        colors = new List<Color32>();
-                        normals = new List<Vector3>();
-                        uvs = new List<Vector2>();
-                        num_local = 0;
-                    }
-                    for (int j=0; j < num_face_props; j++)
+                    uvs = new List<Vector2>();
+                    for (int j = 0; j < num_face_props; j++)
                     {
                         if (fmt == Format.ascii)
                         {
@@ -392,11 +388,31 @@ public class PlyLoader
                             face_prop_values[j][i] = reader.ReadInt32();
                         }
                     }
+                    uvs.Add(new Vector2(getSemanticColor(face_prop_values[2][i]), 0));
+                    if (num_local >= 65530 || i + 1 == num_faces)
+                    {
+                        Mesh mesh = new Mesh();
+                        meshes.Add(mesh);
+                        //Debug.Log("vertices=" + vertices.Count + " normals=" + normals.Count + " uvs=" + uvs.Count + " colors=" + colors.Count);
+                        mesh.vertices = vertices.ToArray();
+                        //mesh.uv = uvs.ToArray(); //if (!no_uv) 
+                        if (!no_nxyz) mesh.normals = normals.ToArray();
+                        if (!no_rgb) mesh.colors32 = colors.ToArray();
+                        mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0, true);
+                        mesh.name = "mesh";
+                        indices = new List<int>();
+                        global_to_local = new Dictionary<int, int>();
+                        vertices = new List<Vector3>();
+                        colors = new List<Color32>();
+                        normals = new List<Vector3>();
+                        uvs = new List<Vector2>();
+                        num_local = 0;
+                    }
                 }
                 return meshes.ToArray();
             }
         }
-        Debug.Log("file doesn't exist, check path");
-        return new Mesh[0];
+        throw (new Exception("file doesn't exist, check path"));
+        //return new Mesh[0];
     }
 }
