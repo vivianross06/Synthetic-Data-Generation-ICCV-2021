@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 public class PlyLoader
 {
@@ -56,24 +57,54 @@ public class PlyLoader
         }
     }
 
-    private int getSemanticColor(int category_id) {
+    private int[] semanticColors;
+
+    private void loadSemanticColors() {
+
+        //semanticColors = new Dictionary<int, int>();
 
         //Instead of parsing the .tsv files every time, parse once at the beginning and use a dictionary map category ids to semantic colors.
 
-        //string filename = Application.dataPath + "/MatterportMetadata/category_mapping.tsv";
-        //String[] content = File.ReadAllLines(filename);
+        string catfilename = Application.dataPath + "/MatterportMetadata/category_mapping.tsv";
+        string colfilname = Application.dataPath + "/MatterportMetadata/mpcat40.tsv";
 
-        /*var lls = new List<List<string>>();
-        for (int i = 0; i < content.First().Split('\t').Length; i++)
+        List<int> sc = new List<int>();
+        sc.Add(0); //Default Color = black
+
+        String[] content = File.ReadAllLines(catfilename);
+
+        var catls = new List<List<string>>();
+
+        for (int i = 0; i < content.Length; i++)
         {
-            lls.Add(content.Select(x => x.Split('\t')[i]).ToList());
-        }*/
-        return 1;
+            catls.Add((content[i].Split('\t')).ToList());
+        }
+
+        content = File.ReadAllLines(colfilname);
+
+        var colls = new List<List<string>>();
+        for (int i = 0; i < content.Length; i++)
+        {
+            colls.Add((content[i].Split('\t')).ToList());
+        }
+
+        int mp40col = catls[0].IndexOf("mpcat40index");
+        int colcol = colls[0].IndexOf("hex");
+
+        for (int i = 1; i < catls.Count; i++) {
+            int mp40Index = Int32.Parse(catls[i][mp40col]);
+            string hexCol = colls[mp40Index + 1][colcol];
+            int intValue = int.Parse(hexCol.Substring(1), System.Globalization.NumberStyles.HexNumber);
+            sc.Add(intValue);
+        }
+        semanticColors = sc.ToArray();
+        
 
     }
 
     public Mesh[] load(string filename)
     {
+        loadSemanticColors();
         if (File.Exists(filename))
         {
             using (FileStream file = File.Open(filename, FileMode.Open))
@@ -394,10 +425,13 @@ public class PlyLoader
                         }
                     }
                     //uvs.Add(new Vector2(getSemanticColor(face_prop_values[2][i]), 0));
-                    for (int k=0; k<face_vertices.Count; k++)
+                    for (int k = 0; k < face_vertices.Count; k++)
                     {
-                        //Debug.Log(global_to_local[face_vertices[k]]);
-                        uvs[global_to_local[face_vertices[k]]] = new Vector2(getSemanticColor(face_prop_values[2][i]), 0);
+                        //Debug.Log(face_prop_values[2][i]);
+                        if (!(face_prop_values[2][i]  < 0))
+                            uvs[global_to_local[face_vertices[k]]] = new Vector2(semanticColors[face_prop_values[2][i]], 0);
+                        else
+                            uvs[global_to_local[face_vertices[k]]] = new Vector2(0, 0);
                     }
 
                     if (num_local >= 65530 || i + 1 == num_faces)
