@@ -310,6 +310,7 @@ public class PlyLoader
                     int b = 0;
                     string[] numbers = null;
                     int numbers_idx = 0;
+                    List<int> face_vertices = new List<int>();
 
                     if (fmt == Format.ascii)
                     {
@@ -324,10 +325,14 @@ public class PlyLoader
                         nj = reader.ReadByte();
                         a = reader.ReadInt32();
                         b = reader.ReadInt32();
+
                     }
+                    face_vertices.Add(a);
+                    face_vertices.Add(b);
                     for (int j = 2; j < nj; ++j)
                     {
                         int c = fmt == Format.ascii ? Int32.Parse(numbers[numbers_idx++]) : reader.ReadInt32();
+                        face_vertices.Add(c);
                         int[] abc = { a, b, c };
                         foreach (int g in abc)
                         {
@@ -342,6 +347,7 @@ public class PlyLoader
                                 vertices.Add(new Vector3(pv[prop_x][g], pv[prop_y][g], pv[prop_z][g]));
                                 if (!no_nxyz) normals.Add(new Vector3(pv[prop_nx][g], pv[prop_ny][g], pv[prop_nz][g]));
                                 if (!no_uv) uvs.Add(new Vector2(pv[prop_u][g], pv[prop_v][g]));
+                                else uvs.Add(new Vector2(0, 0));
                                 if (!no_rgb) colors.Add(new Color32((byte)(pv[prop_r][g] * 255.0f), (byte)(pv[prop_g][g] * 255.0f), (byte)(pv[prop_b][g] * 255.0f), 255));
                                 global_to_local[g] = num_local;
                                 indices.Add(num_local++);
@@ -349,7 +355,6 @@ public class PlyLoader
                         }
                         b = c;
                     }
-                    uvs = new List<Vector2>();
                     for (int j = 0; j < num_face_props; j++)
                     {
                         if (fmt == Format.ascii)
@@ -388,14 +393,20 @@ public class PlyLoader
                             face_prop_values[j][i] = reader.ReadInt32();
                         }
                     }
-                    uvs.Add(new Vector2(getSemanticColor(face_prop_values[2][i]), 0));
+                    //uvs.Add(new Vector2(getSemanticColor(face_prop_values[2][i]), 0));
+                    for (int k=0; k<face_vertices.Count; k++)
+                    {
+                        //Debug.Log(global_to_local[face_vertices[k]]);
+                        uvs[global_to_local[face_vertices[k]]] = new Vector2(getSemanticColor(face_prop_values[2][i]), 0);
+                    }
+
                     if (num_local >= 65530 || i + 1 == num_faces)
                     {
                         Mesh mesh = new Mesh();
                         meshes.Add(mesh);
                         //Debug.Log("vertices=" + vertices.Count + " normals=" + normals.Count + " uvs=" + uvs.Count + " colors=" + colors.Count);
                         mesh.vertices = vertices.ToArray();
-                        //mesh.uv = uvs.ToArray(); //if (!no_uv) 
+                        mesh.uv = uvs.ToArray(); //if (!no_uv) 
                         if (!no_nxyz) mesh.normals = normals.ToArray();
                         if (!no_rgb) mesh.colors32 = colors.ToArray();
                         mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0, true);

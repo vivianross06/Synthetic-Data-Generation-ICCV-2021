@@ -26,6 +26,11 @@ public class MatterportPLY : MonoBehaviour
             mr.material = new Material(Shader.Find("Custom/VertexColors"));
         }
         parent.transform.Rotate(-90, 0, 0);
+        for (int i=0; i<100; i++)
+        {
+            Debug.Log(mesh[92].uv[i]);
+        }
+        
     }
 
     // Update is called once per frame
