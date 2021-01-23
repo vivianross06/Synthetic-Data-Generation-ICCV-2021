@@ -424,7 +424,7 @@ public class PlyLoader
                             face_prop_values[j][i] = reader.ReadInt32();
                         }
                     }
-                    //uvs.Add(new Vector2(getSemanticColor(face_prop_values[2][i]), 0));
+
                     for (int k = 0; k < face_vertices.Count; k++)
                     {
                         //Debug.Log(face_prop_values[2][i]);
