@@ -17,7 +17,7 @@ public class MatterportPLY : MonoBehaviour
         shaderFlag = useSemantic;
         if (useSemantic)
         {
-            currentShader = "Custom/SemanticColors";
+            currentShader = "Custom/Depthmap";
 
         }
         else
@@ -52,7 +52,7 @@ public class MatterportPLY : MonoBehaviour
         if (shaderFlag != useSemantic) {
             if (useSemantic)
             {
-                currentShader = "Custom/SemanticColors";
+                currentShader = "Custom/Depthmap";
 
             }
             else
