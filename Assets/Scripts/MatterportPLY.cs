@@ -6,24 +6,15 @@ using MatterportUnity;
 
 public class MatterportPLY : MonoBehaviour
 {
-    public bool useSemantic = false;
-    private bool shaderFlag = false;
     private string currentShader;
     private GameObject parentObj;
     public string house;
+    public enum ShaderEnum { RGB, SemanticShader, DepthMap };
+    public ShaderEnum shaders;
     // Use this for initialization
     void Start()
     {
-        shaderFlag = useSemantic;
-        if (useSemantic)
-        {
-            currentShader = "Custom/Depthmap";
-
-        }
-        else
-        {
-            currentShader = "Custom/VertexColors";
-        }
+        currentShader = "Custom/VertexColors";
 
         PlyLoader loader = new PlyLoader();
         string path = Config.MATTERPORT_HOME + house + "/house_segmentations/" + house + ".ply";
@@ -49,6 +40,23 @@ public class MatterportPLY : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (shaders == ShaderEnum.RGB)
+        {
+            currentShader = "Custom/VertexColors";
+        }
+        else if (shaders == ShaderEnum.SemanticShader)
+        {
+            currentShader = "Custom/SemanticColors";
+        }
+        else if (shaders == ShaderEnum.DepthMap)
+        {
+            currentShader = "Custom/Depthmap";
+        }
+        foreach (Transform child in parentObj.transform)
+        {
+            child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
+        }
+        /*
         if (shaderFlag != useSemantic) {
             if (useSemantic)
             {
@@ -65,5 +73,6 @@ public class MatterportPLY : MonoBehaviour
             }
             shaderFlag = useSemantic;
         }
+        */
     }
 }
