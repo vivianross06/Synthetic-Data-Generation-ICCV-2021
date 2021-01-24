@@ -6,24 +6,26 @@ using System.IO;
 
 public class MatterportRoomPLY : MonoBehaviour
 {
-    public bool useSemantic = false;
-    private bool shaderFlag = false;
+    public enum ShaderEnum { RGB, SemanticShader, DepthMap };
+    public ShaderEnum shaders;
     private string currentShader;
     public string house;
     public List<bool> roomNumber = new List<bool>();
     private List<GameObject> roomObjects = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
-    { 
-        shaderFlag = useSemantic;
-        if (useSemantic)
-        {
-            currentShader = "Custom/SemanticColors";
-
-        }
-        else
+    {
+        if (shaders == ShaderEnum.RGB)
         {
             currentShader = "Custom/VertexColors";
+        }
+        else if (shaders == ShaderEnum.SemanticShader)
+        {
+            currentShader = "Custom/SemanticColors";
+        }
+        else if (shaders == ShaderEnum.DepthMap)
+        {
+            currentShader = "Custom/Depthmap";
         }
 
         string path = Config.MATTERPORT_HOME + house + "/region_segmentations/";
@@ -60,25 +62,24 @@ public class MatterportRoomPLY : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (shaderFlag != useSemantic)
+        if (shaders == ShaderEnum.RGB)
         {
-            if (useSemantic)
+            currentShader = "Custom/VertexColors";
+        }
+        else if (shaders == ShaderEnum.SemanticShader)
+        {
+            currentShader = "Custom/SemanticColors";
+        }
+        else if (shaders == ShaderEnum.DepthMap)
+        {
+            currentShader = "Custom/Depthmap";
+        }
+        foreach (GameObject room in roomObjects)
+        {
+            foreach (Transform child in room.transform)
             {
-                currentShader = "Custom/SemanticColors";
-
+                child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
             }
-            else
-            {
-                currentShader = "Custom/VertexColors";
-            }
-            foreach (GameObject room in roomObjects)
-            {
-                foreach (Transform child in room.transform)
-                {
-                    child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
-                }
-            }
-            shaderFlag = useSemantic;
         }
         for (int i = 0; i < roomNumber.Count; i++)
         {

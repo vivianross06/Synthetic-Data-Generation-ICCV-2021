@@ -14,7 +14,18 @@ public class MatterportPLY : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        currentShader = "Custom/VertexColors";
+        if (shaders == ShaderEnum.RGB)
+        {
+            currentShader = "Custom/VertexColors";
+        }
+        else if (shaders == ShaderEnum.SemanticShader)
+        {
+            currentShader = "Custom/SemanticColors";
+        }
+        else if (shaders == ShaderEnum.DepthMap)
+        {
+            currentShader = "Custom/Depthmap";
+        }
 
         PlyLoader loader = new PlyLoader();
         string path = Config.MATTERPORT_HOME + house + "/house_segmentations/" + house + ".ply";
@@ -56,23 +67,5 @@ public class MatterportPLY : MonoBehaviour
         {
             child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
         }
-        /*
-        if (shaderFlag != useSemantic) {
-            if (useSemantic)
-            {
-                currentShader = "Custom/Depthmap";
-
-            }
-            else
-            {
-                currentShader = "Custom/VertexColors";
-            }
-            foreach (Transform child in parentObj.transform)
-            {
-                child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
-            }
-            shaderFlag = useSemantic;
-        }
-        */
     }
 }
