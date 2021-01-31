@@ -5,7 +5,7 @@ using CampRobertsUnity;
 
 public class CampRoberts : MonoBehaviour
 {
-    public string house; //17DRP5sb8fy
+    public string LevelOfDetail; //17DRP5sb8fy
     string error = string.Empty;
     GameObject loadedObject;
     GameObject parentObject;
@@ -17,18 +17,17 @@ public class CampRoberts : MonoBehaviour
           for (int i=0; i<dir.Length; i++) {
                string[] folders = dir[i].Split('/');
                string tileName = folders[folders.Length - 1];
-               string fullPath = dir[i] + "/" + tileName + "_" + Config.CR_LOD;
-               //if (loadedObject != null)
-               //    Destroy(loadedObject);
-               GameObject loadedObject = new OBJLoader().Load(fullPath + ".obj", fullPath + ".mtl");
-               try
-               {
-                   Mesh m = loadedObject.transform.GetChild(0).GetComponent<MeshFilter>().mesh;
-               }
-               catch (UnityException e) {
-                   Debug.Log(tileName + "is a dud!");
-               }
-               //Debug.Log(loadedObject.name);
+               string fullPath = dir[i] + "/" + tileName + "_" + LevelOfDetail;
+            //if (loadedObject != null)
+            //    Destroy(loadedObject);
+            try
+            {
+                loadedObject = new OBJLoader().Load(fullPath + ".obj", fullPath + ".mtl");
+            }
+            catch (FileNotFoundException e) {
+                loadedObject = new GameObject(tileName);
+                Debug.Log(e);
+            }
                loadedObject.transform.Rotate(-90, 0, 0);
                //loadedObject.transform.position = new Vector3(0, 0, 0);
                loadedObject.transform.localScale = new Vector3(1, 1, 1);
