@@ -155,8 +155,8 @@ namespace Dummiesman
 				}
 				
 				if (buffer.Is("v")) {
-					Vertices.Add(buffer.ReadVector());
-					continue;
+                    Vertices.Add(buffer.ReadVector());
+                    continue;
 				}
 
 				//normal

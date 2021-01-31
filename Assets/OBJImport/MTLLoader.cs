@@ -156,8 +156,8 @@ public class MTLLoader {
             if (splitLine[0] == "newmtl")
             {
                 string materialName = processedLine.Substring(7);
-                var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
-                //var newMtl = new Material(Shader.Find("Standard (Specular setup)")) { name = materialName };
+                //var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
+                var newMtl = new Material(Shader.Find("Standard (Specular setup)")) { name = materialName };
                 mtlDict[materialName] = newMtl;
                 currentMaterial = newMtl;
 

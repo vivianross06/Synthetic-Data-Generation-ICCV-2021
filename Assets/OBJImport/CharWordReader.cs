@@ -105,6 +105,9 @@ namespace Dummiesman {
 
 		public int ReadInt() {
 			int result = 0;
+			if (this.currentChar == '+') {
+				this.MoveNext();
+			}
 			bool isNegative = this.currentChar == '-';
 			if (isNegative == true) {
 				this.MoveNext();
