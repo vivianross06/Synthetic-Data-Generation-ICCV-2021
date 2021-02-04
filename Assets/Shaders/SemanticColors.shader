@@ -28,7 +28,7 @@
              float b = (scol & 0x000000ff) / 255.0;
              vertexOutput output; // we don't need to type 'struct' here
              output.pos = UnityObjectToClipPos(input.position);
-             output.col = float4(r, g, b, 0.0);
+             output.col = float4(r, g, b, 1.0);
              // Here the vertex shader writes output data
              // to the output structure. 
           return output;
