@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class TakeScreenshot : MonoBehaviour
 {
-    private static string path;
-    private static string filename;
-    private static int counter;
-    public static List<Shader> shaderList = new List<Shader>();
+    private string path;
+    private string filename;
+    private int counter;
+    public List<Shader> shaderList = new List<Shader>();
 
     private void Start()
     {
@@ -20,13 +20,14 @@ public class TakeScreenshot : MonoBehaviour
         Directory.CreateDirectory(path + "semantic/"); //creates directory
         Directory.CreateDirectory(path + "depth/"); //creates directory
     }
-    public static void CaptureScreenshot(Camera cam, int width, int height)
+    public void CaptureScreenshot(Camera cam, int width, int height)
     {
         // Depending on your render pipeline, this may not work.
         var bak_cam_targetTexture = cam.targetTexture;
         var bak_cam_clearFlags = cam.clearFlags;
         var bak_RenderTexture_active = RenderTexture.active;
-        var tex_default = new Texture2D(width, height, TextureFormat.ARGB32, false);
+        var tex_default = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        var tex_semantic = new Texture2D(width, height, TextureFormat.RGBA32, false);
         var tex_depth = new Texture2D(width, height, TextureFormat.RGBAFloat, false);
         // Must use 24-bit depth buffer to be able to fill background.
         var render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
@@ -46,24 +47,27 @@ public class TakeScreenshot : MonoBehaviour
                 tex_depth.Apply();
                 byte[] Shot = ImageConversion.EncodeToEXR(tex_depth);
                 string savePath = path + "depth/" + filename + counter + ".exr";
-                Debug.Log(savePath);
                 File.WriteAllBytes(savePath, Shot);
             }
             else
             {
-                tex_default.ReadPixels(grab_area, 0, 0);
-                tex_default.Apply();
-                byte[] Shot = ImageConversion.EncodeToPNG(tex_depth);
                 string savePath;
                 if (shaderList[i].name == "Custom/SemanticColors")
                 {
                     savePath = path + "semantic/" + filename + counter + ".png";
+                    tex_semantic.ReadPixels(grab_area, 0, 0);
+                    tex_semantic.Apply();
+                    byte[] Shot = ImageConversion.EncodeToPNG(tex_semantic);
+                    File.WriteAllBytes(savePath, Shot);
                 }
                 else
                 {
                     savePath = path + "RGB/" + filename + counter + ".png";
+                    tex_default.ReadPixels(grab_area, 0, 0);
+                    tex_default.Apply();
+                    byte[] Shot = ImageConversion.EncodeToPNG(tex_default);
+                    File.WriteAllBytes(savePath, Shot);
                 }
-                File.WriteAllBytes(savePath, Shot);
             }
             
         }
@@ -79,6 +83,8 @@ public class TakeScreenshot : MonoBehaviour
         RenderTexture.ReleaseTemporary(render_texture);
         Texture2D.Destroy(tex_depth);
         Texture2D.Destroy(tex_default);
+        Texture2D.Destroy(tex_semantic);
+        counter++;
     }
 
     void Update()
