@@ -156,8 +156,9 @@ public class MTLLoader {
             if (splitLine[0] == "newmtl")
             {
                 string materialName = processedLine.Substring(7);
-                //var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
-                var newMtl = new Material(Shader.Find("Standard (Specular setup)")) { name = materialName };
+                var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
+                //var newMtl = new Material(Shader.Find("Standard (Specular setup)")) { name = materialName };
+                //var newMtl = new Material(Shader.Find("Standard")) { name = materialName };
                 mtlDict[materialName] = newMtl;
                 currentMaterial = newMtl;
 
@@ -167,9 +168,9 @@ public class MTLLoader {
             //anything past here requires a material instance
             if (currentMaterial == null)
                 continue;
-
+            
             //diffuse color
-            if (splitLine[0] == "Kd" || splitLine[0] == "kd")
+            if ((splitLine[0] == "Kd" || splitLine[0] == "kd") && (currentMaterial.shader.name != "Unlit/Texture"))
             {
                 var currentColor = currentMaterial.GetColor("_Color");
                 var kdColor = OBJLoaderHelper.ColorFromStrArray(splitLine);
@@ -177,7 +178,7 @@ public class MTLLoader {
                 currentMaterial.SetColor("_Color", new Color(kdColor.r, kdColor.g, kdColor.b, currentColor.a));
                 continue;
             }
-
+            
             //diffuse map
             if (splitLine[0] == "map_Kd" || splitLine[0] == "map_kd")
             {
