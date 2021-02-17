@@ -95,7 +95,7 @@ public class MatterportRoomPLY : MonoBehaviour
 
         fromObj.SetActive(false);
 
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl, OL_GLOBAL_INFO.TOTAL_POINTS);
+        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
     }
 
 

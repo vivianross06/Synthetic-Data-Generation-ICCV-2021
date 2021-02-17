@@ -83,7 +83,7 @@ public class MatterportPLY : MonoBehaviour
 
         fromObj.SetActive(false);
 
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl, OL_GLOBAL_INFO.TOTAL_POINTS);
+        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
     }
 
     // Update is called once per frame

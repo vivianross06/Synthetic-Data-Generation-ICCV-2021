@@ -69,7 +69,8 @@ public class OLEditor : Editor
 		}*/
 
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
-
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
+		
 		if (ol.ScreenshotScript == null)
 			screenshotType = null;
 		else
@@ -110,7 +111,7 @@ public class OLEditor : Editor
 
 		//Resize our list
 		EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Define the list size with a number");
+        //EditorGUILayout.LabelField("Define the list size with a number");
         ListSize = ThisList.arraySize;
         ListSize = EditorGUILayout.IntField("List Size", ListSize);
 
@@ -128,8 +129,8 @@ public class OLEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Or");
-        EditorGUILayout.Space();
+        //EditorGUILayout.LabelField("Or");
+        //EditorGUILayout.Space();
         EditorGUILayout.Space();
 
         //Or add a new item to the List<> with a button

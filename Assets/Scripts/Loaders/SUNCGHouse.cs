@@ -52,7 +52,7 @@ public class SUNCGHouse : MonoBehaviour
         }
        navAgent = OL_GLOBAL_INFO.AGENT;
        navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
-       navAgent.GetComponent<SimpleAgent>().StartAgent(bboxlist, OL_GLOBAL_INFO.TOTAL_POINTS);
+       navAgent.GetComponent<SimpleAgent>().StartAgent(bboxlist);
 
     }
 

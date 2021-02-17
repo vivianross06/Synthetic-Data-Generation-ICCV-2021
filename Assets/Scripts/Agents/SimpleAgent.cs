@@ -10,6 +10,8 @@ public class SimpleAgent : MonoBehaviour
     //private List<Vector3> destList = new List<Vector3>();
     private List<List<Vector3>> regions = new List<List<Vector3>>();
     private Vector3 myDest = new Vector3(0, 0, 0);
+    private Vector3 startPos;
+    private float scStep;
     public bool mouseMode = false; //true = the destination is set by clicking and/or holding left click down. false = roam randomly between a list random points, where.
 
     // Start is called before the first frame update
@@ -39,19 +41,24 @@ public class SimpleAgent : MonoBehaviour
         }
         else {
             if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
-                //navMeshAgent.SetDestination(destList[Random.Range(0, destList.Count)]);
                 if (regions.Count > 0)
                 {
                     Vector3 v = getRandomPoint();
                     if(navMeshAgent.enabled)
                         navMeshAgent.SetDestination(v);
-                    screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
                 }
             }
         }
+        if(Vector3.Distance(transform.position, startPos) >= scStep)
+		{
+            startPos = transform.position;
+            screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
+        }
     }
 
-    public void StartAgent(List<(Vector3, Vector3)> bboxlist, int totalPoints) {
+    public void StartAgent(List<(Vector3, Vector3)> bboxlist) {
+        scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
+        int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
         screenshot = GetComponent<TakeScreenshot>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         //make regions
@@ -75,6 +82,7 @@ public class SimpleAgent : MonoBehaviour
             regions.Add(region);
 		}
         transform.position = regions[0][0];
+        startPos = transform.position;
         navMeshAgent.enabled = true;
         gameObject.SetActive(true);
     }
@@ -154,8 +162,8 @@ public class SimpleAgent : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Point not found.");
-                    Debug.Log(randomPoint);
+                    //Debug.Log("Point not found.");
+                    //Debug.Log(randomPoint);
                 }
 
             }
@@ -172,7 +180,7 @@ public class SimpleAgent : MonoBehaviour
         {
             Gizmos.color = colors[i%8];
             foreach (Vector3 v in regions[i])
-                Gizmos.DrawSphere(v, radius);
+                Gizmos.DrawSphere(v, 1.0f);
         }
         Gizmos.color = Color.white;
         if (Application.isPlaying)

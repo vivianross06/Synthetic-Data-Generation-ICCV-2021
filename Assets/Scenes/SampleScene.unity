@@ -224,6 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 743955941}
   - component: {fileID: 743955940}
+  - component: {fileID: 743955942}
   m_Layer: 0
   m_Name: OL_Object
   m_TagString: Untagged
@@ -244,10 +245,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Agent: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
-  Loader: {fileID: 0}
+  Loader: {fileID: 11500000, guid: 39eaf1ebc4ab06a4bb2be2281703f301, type: 3}
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs: []
-  agentWaypoints: 40
+  agentWaypoints: 800
+  stepDistance: 1
 --- !u!4 &743955941
 Transform:
   m_ObjectHideFlags: 0
@@ -262,6 +264,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &743955942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743955939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39eaf1ebc4ab06a4bb2be2281703f301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LevelOfDetail: 20
 --- !u!1 &2034915067
 GameObject:
   m_ObjectHideFlags: 0

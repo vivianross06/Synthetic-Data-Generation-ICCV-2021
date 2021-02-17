@@ -64,7 +64,7 @@ public class MatterportOBJ : MonoBehaviour
         bb.Item1 = bounds.min;
         bb.Item2 = bounds.max;
         bbl.Add(bb);
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl, OL_GLOBAL_INFO.TOTAL_POINTS);
+        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
     }
 
     /*
