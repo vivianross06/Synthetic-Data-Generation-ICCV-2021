@@ -12,6 +12,9 @@ public class SimpleAgent : MonoBehaviour
     private Vector3 myDest = new Vector3(0, 0, 0);
     private Vector3 startPos;
     private float scStep;
+    private Quaternion finalRotation;
+    private Quaternion currentRotation;
+    private float totalDistance = 1;
     public bool mouseMode = false; //true = the destination is set by clicking and/or holding left click down. false = roam randomly between a list random points, where.
 
     // Start is called before the first frame update
@@ -44,12 +47,22 @@ public class SimpleAgent : MonoBehaviour
                 if (regions.Count > 0)
                 {
                     Vector3 v = getRandomPoint();
-                    if(navMeshAgent.enabled)
+                    if (navMeshAgent.enabled)
+                    {
                         navMeshAgent.SetDestination(v);
+                        currentRotation = finalRotation;
+                        float angle = Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION, OL_GLOBAL_INFO.MAX_ROTATION);
+                        finalRotation *= Quaternion.Euler(Vector3.up * angle);
+                        NavMeshPath path = new NavMeshPath();
+                        NavMesh.CalculatePath(transform.position, v, NavMesh.AllAreas, path);
+                        totalDistance = PathLength(path);
+                    }
+                    
                 }
             }
         }
-        if(Vector3.Distance(transform.position, startPos) >= scStep)
+        transform.GetChild(0).rotation = Quaternion.Slerp(currentRotation, finalRotation, Mathf.Clamp(1-(navMeshAgent.remainingDistance/totalDistance), 0 ,1));
+        if (Vector3.Distance(transform.position, startPos) >= scStep)
 		{
             startPos = transform.position;
             screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
@@ -83,6 +96,8 @@ public class SimpleAgent : MonoBehaviour
 		}
         transform.position = regions[0][0];
         startPos = transform.position;
+        currentRotation = transform.rotation;
+        finalRotation = currentRotation;
         navMeshAgent.enabled = true;
         gameObject.SetActive(true);
     }
@@ -91,7 +106,10 @@ public class SimpleAgent : MonoBehaviour
     {
         if (regions.Count > 0)
         {
+            currentRotation = transform.rotation;
+            finalRotation = currentRotation;
             transform.position = regions[0][0];
+            startPos = transform.position;
             navMeshAgent.enabled = true;
         }
         else
@@ -180,11 +198,29 @@ public class SimpleAgent : MonoBehaviour
         {
             Gizmos.color = colors[i%8];
             foreach (Vector3 v in regions[i])
-                Gizmos.DrawSphere(v, 1.0f);
+                Gizmos.DrawSphere(v, radius);
         }
         Gizmos.color = Color.white;
         if (Application.isPlaying)
             Gizmos.DrawSphere(myDest, radius+0.1f);
 
+    }
+
+    private float PathLength(NavMeshPath path)
+    {
+        if (path.corners.Length < 2)
+            return 0;
+
+        Vector3 previousCorner = path.corners[0];
+        float lengthSoFar = 0.0F;
+        int i = 1;
+        while (i < path.corners.Length)
+        {
+            Vector3 currentCorner = path.corners[i];
+            lengthSoFar += Vector3.Distance(previousCorner, currentCorner);
+            previousCorner = currentCorner;
+            i++;
+        }
+        return lengthSoFar;
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEditor;
 
 public enum FileEnum { PNG, EXR };
+public enum ModeEnum { Robot, Human };
 
 [System.Serializable]
 public struct ScreenShotType
@@ -23,6 +24,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public uint agentWaypoints = 40;
     [HideInInspector] public float stepDistance = 1.0f;
+    [HideInInspector] public ModeEnum flythroughMode;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +35,14 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
         OL_GLOBAL_INFO.TOTAL_POINTS = Convert.ToInt32(agentWaypoints);
         OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS = stepDistance;
+        if (flythroughMode == ModeEnum.Robot)
+        {
+            OL_GLOBAL_INFO.MAX_ROTATION = 90.0f;
+        }else if (flythroughMode == ModeEnum.Human)
+        {
+            OL_GLOBAL_INFO.MAX_ROTATION = 40.0f;
+        }
+
         agentObj.AddComponent(Agent.GetClass());
         agentObj.AddComponent(ScreenshotScript.GetClass());
         NavMeshAgent nma = agentObj.AddComponent<NavMeshAgent>();
@@ -61,6 +71,7 @@ public static class OL_GLOBAL_INFO
     public static string SCREENSHOT_FILENAME = "Capture";
     public static int TOTAL_POINTS = 40;
     public static float DISTANCE_BETWEEN_SCREENSHOTS = 1.0f;
+    public static float MAX_ROTATION = 90.0f;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;

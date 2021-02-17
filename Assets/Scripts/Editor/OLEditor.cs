@@ -68,6 +68,7 @@ public class OLEditor : Editor
 			}
 		}*/
 
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughMode"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
 		
