@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using MatterportUnity;
+using OmniLoaderUnity;
 //using Loaders;
 
 public class MatterportPLY : MonoBehaviour

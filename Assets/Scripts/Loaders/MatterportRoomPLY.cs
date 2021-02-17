@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MatterportUnity;
+using OmniLoaderUnity;
 using System.IO;
 
 public class MatterportRoomPLY : MonoBehaviour
@@ -11,6 +11,7 @@ public class MatterportRoomPLY : MonoBehaviour
     private string currentShader;
     public string house;
     public List<bool> roomNumber = new List<bool>();
+    private bool defaultValue = true; //Do we show a room if it is not specified whether we want to show it or not?
     private List<GameObject> roomObjects = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
@@ -39,7 +40,8 @@ public class MatterportRoomPLY : MonoBehaviour
         {
             path = files[j];
             Mesh[] mesh = loader.load(path);
-            roomNumber.Add(true);
+            if(roomNumber.Count == j)
+                roomNumber.Add(defaultValue);
 
             room=new GameObject("room" + j) ;
             room.transform.parent = parent.transform;

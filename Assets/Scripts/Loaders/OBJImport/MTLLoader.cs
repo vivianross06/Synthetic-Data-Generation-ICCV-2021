@@ -132,7 +132,7 @@ public class MTLLoader {
     /// </summary>
     /// <param name="input">The input stream from the MTL file</param>
     /// <returns>Dictionary containing loaded materials</returns>
-    public Dictionary<string, Material> Load(Stream input)
+    public Dictionary<string, Material> Load(Stream input, Shader shader)
     {
         var inputReader = new StreamReader(input);
         var reader = new StringReader(inputReader.ReadToEnd());
@@ -156,7 +156,8 @@ public class MTLLoader {
             if (splitLine[0] == "newmtl")
             {
                 string materialName = processedLine.Substring(7);
-                var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
+                var newMtl = new Material(shader) { name = materialName };
+                //var newMtl = new Material(Shader.Find("Unlit/Texture")) { name = materialName };
                 //var newMtl = new Material(Shader.Find("Standard (Specular setup)")) { name = materialName };
                 //var newMtl = new Material(Shader.Find("Standard")) { name = materialName };
                 mtlDict[materialName] = newMtl;
@@ -294,14 +295,14 @@ public class MTLLoader {
     /// </summary>
     /// <param name="path">The path to the MTL file</param>
     /// <returns>Dictionary containing loaded materials</returns>
-	public Dictionary<string, Material> Load(string path)
+	public Dictionary<string, Material> Load(string path, Shader shader)
     {
         _objFileInfo = new FileInfo(path); //get file info
         SearchPaths.Add(_objFileInfo.Directory.FullName); //add root path to search dir
 
         using (var fs = new FileStream(path, FileMode.Open))
         {
-            return Load(fs); //actually load
+            return Load(fs, shader); //actually load
         }
         
     }
