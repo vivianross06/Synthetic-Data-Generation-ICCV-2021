@@ -52,13 +52,13 @@ public class CampRoberts : MonoBehaviour
                         + ", used level " + newLevel);
                 }
             }
-            loadedObject.layer = 8;
             loadedObject.transform.Rotate(-90, 0, 0);
             //loadedObject.transform.position = new Vector3(0, 0, 0);
             loadedObject.transform.localScale = new Vector3(1, 1, 1);
             loadedObject.transform.SetParent(parentObject.transform, false);
 
         }
+        OL_GLOBAL_INFO.setLayerOfAll(parentObject, 8);
 
         navMeshSurface = parentObject.AddComponent<NavMeshSurface>();
         navMeshSurface.layerMask = LayerMask.GetMask("NavMeshLayer");
@@ -78,10 +78,11 @@ public class CampRoberts : MonoBehaviour
         {
             bounds.Encapsulate(renderer.bounds);
         }
+
         bb.Item1 = bounds.min;
         bb.Item2 = bounds.max;
         bbl.Add(bb);
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl, OL_GLOBAL_INFO.TOTAL_POINTS);
     }
 
     /*

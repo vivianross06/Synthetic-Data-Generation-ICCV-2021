@@ -10,7 +10,6 @@ public class SimpleAgent : MonoBehaviour
     //private List<Vector3> destList = new List<Vector3>();
     private List<List<Vector3>> regions = new List<List<Vector3>>();
     private Vector3 myDest = new Vector3(0, 0, 0);
-    public int totalPoints = 40;
     public bool mouseMode = false; //true = the destination is set by clicking and/or holding left click down. false = roam randomly between a list random points, where.
 
     // Start is called before the first frame update
@@ -52,13 +51,12 @@ public class SimpleAgent : MonoBehaviour
         }
     }
 
-    public void StartAgent(List<(Vector3, Vector3)> bboxlist) {
-        gameObject.SetActive(true);
+    public void StartAgent(List<(Vector3, Vector3)> bboxlist, int totalPoints) {
         screenshot = GetComponent<TakeScreenshot>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         //make regions
         NavMeshPath path = new NavMeshPath();
-        List<Vector3> d = createRandomPoints(bboxlist);
+        List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
         while (d.Count > 0)
 		{
             Vector3 src = d[0];
@@ -66,7 +64,7 @@ public class SimpleAgent : MonoBehaviour
             for (int i=0; i<d.Count; i++)
 			{
                 NavMesh.CalculatePath(src, d[i], NavMesh.AllAreas, path);
-				if (path.status == NavMeshPathStatus.PathComplete)
+				if (path.status == NavMeshPathStatus.PathComplete || i==0)
                 {
                     //Then d[0] and d[i] share the same region.
                     region.Add(d[i]);
@@ -78,6 +76,7 @@ public class SimpleAgent : MonoBehaviour
 		}
         transform.position = regions[0][0];
         navMeshAgent.enabled = true;
+        gameObject.SetActive(true);
     }
 
     public void ResetAgent(List<List<Vector3>> regions)
@@ -127,7 +126,7 @@ public class SimpleAgent : MonoBehaviour
         }
     }
 
-    private List<Vector3> createRandomPoints(List<(Vector3, Vector3)> bboxlist)
+    private List<Vector3> createRandomPoints(List<(Vector3, Vector3)> bboxlist, int totalPoints)
     {
         List<Vector3> randomPoints = new List<Vector3>();
         int pointsPerLevel = totalPoints / bboxlist.Count;
@@ -147,17 +146,17 @@ public class SimpleAgent : MonoBehaviour
                 NavMeshHit hit;
                 Vector3 result = new Vector3(0, 0, 0); //All this code is doing is finding a random point within the bounding box of the level we are looking at,
                                                        //and then finding the closest point on the NavMesh.
-                if (NavMesh.SamplePosition(randomPoint, out hit, 70.0f, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(randomPoint, out hit, Vector3.Distance(bboxlist[l].Item1, bboxlist[l].Item2), NavMesh.AllAreas))
                 {
                     result = hit.position;
                     randomPoints.Add(result);
                     i++;
                 }
-                /*else
+                else
                 {
                     Debug.Log("Point not found.");
                     Debug.Log(randomPoint);
-                }*/
+                }
 
             }
         }

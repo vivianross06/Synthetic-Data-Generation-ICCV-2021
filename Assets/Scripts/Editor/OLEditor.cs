@@ -17,6 +17,7 @@ public class OLEditor : Editor
 	{
 		base.OnInspectorGUI();
 		OmniLoader ol = (OmniLoader)target;
+		SerializedObject GetTarget = new SerializedObject(target);
 
 		if (ol.Loader == null)
 			loaderType = null;
@@ -67,6 +68,8 @@ public class OLEditor : Editor
 			}
 		}*/
 
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
+
 		if (ol.ScreenshotScript == null)
 			screenshotType = null;
 		else
@@ -98,7 +101,7 @@ public class OLEditor : Editor
 		if(showList)
 		{
 		SerializedProperty ThisList;
-        SerializedObject GetTarget = new SerializedObject(target);
+        //SerializedObject GetTarget = new SerializedObject(target); I put this line earlier.
         ThisList = GetTarget.FindProperty("scs");
 		//List<ScreenShotType> ThisList = ol.scs;
 		//EditorGUILayout.Space();

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,6 +21,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public MonoScript Loader; //Loader is responsible for NavMesh generation
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
+    [HideInInspector] public uint agentWaypoints = 40;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +30,7 @@ public class OmniLoader : MonoBehaviour
         agentObj.SetActive(false);
         OL_GLOBAL_INFO.AGENT = agentObj;
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
+        OL_GLOBAL_INFO.TOTAL_POINTS = Convert.ToInt32(agentWaypoints);
         agentObj.AddComponent(Agent.GetClass());
         agentObj.AddComponent(ScreenshotScript.GetClass());
         NavMeshAgent nma = agentObj.AddComponent<NavMeshAgent>();
@@ -54,4 +57,13 @@ public static class OL_GLOBAL_INFO
     public static GameObject AGENT;
     public static List<ScreenShotType> SCREENSHOT_PROPERTIES;
     public static string SCREENSHOT_FILENAME = "Capture";
+    public static int TOTAL_POINTS = 40;
+
+    public static void setLayerOfAll(GameObject root, int layer) {
+        root.layer = layer;
+        foreach (Transform child in root.transform)
+        {
+            setLayerOfAll(child.gameObject, layer);
+        }
+    }
 }

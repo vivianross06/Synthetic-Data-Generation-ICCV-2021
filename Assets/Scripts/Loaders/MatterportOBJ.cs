@@ -28,9 +28,13 @@ public class MatterportOBJ : MonoBehaviour
         loadedObject.transform.position = new Vector3(0, 0, 0);
         loadedObject.transform.localScale = new Vector3(1, 1, 1);
 
+        GameObject rotFix = new GameObject("objObject");
+        loadedObject.transform.SetParent(rotFix.transform);
+        OL_GLOBAL_INFO.setLayerOfAll(rotFix, 8);
 
-        /*navMeshSurface = loadedObject.AddComponent<NavMeshSurface>();
+        navMeshSurface = rotFix.AddComponent<NavMeshSurface>();
         navMeshSurface.layerMask = LayerMask.GetMask("NavMeshLayer");
+        //^good
         agentSettings = NavMesh.CreateSettings();
         agentSettings.agentHeight = 1.5f;
         agentSettings.agentRadius = 0.1f;
@@ -38,19 +42,29 @@ public class MatterportOBJ : MonoBehaviour
         navAgent = OL_GLOBAL_INFO.AGENT;
         navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
 
+
+
+
         List<(Vector3, Vector3)> bbl = new List<(Vector3, Vector3)>();
         (Vector3, Vector3) bb;
 
-        /*Renderer[] renderers = (Renderer[])Object.FindObjectsOfType(typeof(Renderer));
+        Renderer[] renderers = (Renderer[])Object.FindObjectsOfType(typeof(Renderer));
         Bounds bounds = renderers[0].bounds;
         foreach (Renderer renderer in renderers)
         {
             bounds.Encapsulate(renderer.bounds);
-        }*/
-        //bb.Item1 = new Vector3(0,0,0);
-        //bb.Item2 = new Vector3(0, 0, 0);
-        //bbl.Add(bb);
-        //navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        }
+
+        //Vector3[] verts = NavMesh.CalculateTriangulation().vertices;
+        //int[] ids = NavMesh.CalculateTriangulation().indices;
+        //Mesh mesh = new Mesh();
+        //mesh.vertices = verts;
+        //mesh.triangles = ids;
+
+        bb.Item1 = bounds.min;
+        bb.Item2 = bounds.max;
+        bbl.Add(bb);
+        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl, OL_GLOBAL_INFO.TOTAL_POINTS);
     }
 
     /*
