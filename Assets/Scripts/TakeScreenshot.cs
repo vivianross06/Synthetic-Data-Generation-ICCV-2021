@@ -45,6 +45,7 @@ public class TakeScreenshot : MonoBehaviour
         RenderTexture.active = render_texture;
         cam.targetTexture = render_texture;
         cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = Color.black;
         // Simple: use a clear background
         //cam.backgroundColor = Color.clear;
         //cam.Render();

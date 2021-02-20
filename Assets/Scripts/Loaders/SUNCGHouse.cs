@@ -11,7 +11,7 @@ public class SUNCGHouse : MonoBehaviour
     public House house;
     private GameObject houseObject;
     private GameObject navAgent;
-    public string houseId;
+    public string houseId = "00a13f6179b2ed9a1bc10eef9d5b3bf4";
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
