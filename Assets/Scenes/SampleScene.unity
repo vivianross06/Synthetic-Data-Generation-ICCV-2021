@@ -245,9 +245,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Agent: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
-  Loader: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
+  Loader: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
-  scs: []
+  scs:
+  - shader: {fileID: 4800000, guid: 21f2bd9c2f85a264c86857ccde11b256, type: 3}
+    directoryName: RGB
+    fileType: 0
+  - shader: {fileID: 4800000, guid: 59a3c9c901fac4b339dbbd6dd0343135, type: 3}
+    directoryName: Depth
+    fileType: 1
   agentWaypoints: 800
   stepDistance: 1
   flythroughMode: 0
@@ -274,10 +280,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 743955939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
+  m_Script: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  house: 17DRP5sb8fy
+  house:
+    id: 
+    front: []
+    up: []
+    scaleToMeters: 0
+    levels: []
+  houseId: 00a13f6179b2ed9a1bc10eef9d5b3bf4
 --- !u!1 &2034915067
 GameObject:
   m_ObjectHideFlags: 0

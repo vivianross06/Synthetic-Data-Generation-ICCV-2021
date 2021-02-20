@@ -16,11 +16,22 @@ public class TakeScreenshot : MonoBehaviour
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         path = Application.dataPath + "/../Images/";
         Directory.CreateDirectory(path); //creates directory
+        Directory.CreateDirectory(path + "Parameters/");
     }
     public void CaptureScreenshot(Camera cam, int width, int height)
     {
-        filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
+        string countString;
         path = Application.dataPath + "/../Images/";
+        if (!File.Exists(path + "Parameters/intrinsics.txt"))
+        {
+            Matrix4x4 intrinsics = generateIntrinsicMatrix(cam, width, height);
+            var textWrite = File.CreateText(path + "Parameters/intrinsics.txt");
+            textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2]);
+            textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2]);
+            textWrite.WriteLine(intrinsics[2, 0] + " " + intrinsics[2, 1] + " " + intrinsics[2, 2]);
+            textWrite.Close();
+        }
+        filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         screenshotList = OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES;
         // Depending on your render pipeline, this may not work.
         var bak_cam_targetTexture = cam.targetTexture;
@@ -37,6 +48,14 @@ public class TakeScreenshot : MonoBehaviour
         // Simple: use a clear background
         //cam.backgroundColor = Color.clear;
         //cam.Render();
+        if (counter < 10)
+        {
+            countString = "0" + counter.ToString();
+        }
+        else
+        {
+            countString = counter.ToString();
+        }
         for (int i=0; i< screenshotList.Count; i++)
         {
             if (screenshotList[i].shader != null)
@@ -66,14 +85,20 @@ public class TakeScreenshot : MonoBehaviour
             {
                 tex_EXR.ReadPixels(grab_area, 0, 0);
                 tex_EXR.Apply();
-                Shot = ImageConversion.EncodeToPNG(tex_EXR);
+                Shot = ImageConversion.EncodeToEXR(tex_EXR);
                 extention = ".exr";
             }
-            string savePath = path + dir + filename + counter + extention;
+            string savePath = path + dir + filename + countString + extention;
             File.WriteAllBytes(savePath, Shot);
-
-
         }
+        Matrix4x4 extrinsics = cam.worldToCameraMatrix;
+        var extrinsicsWrite = File.CreateText(path + "Parameters/extrinsics" + countString + ".txt");
+        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[0, 1] + " " + extrinsics[0, 2] + " " + extrinsics[0, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[1, 1] + " " + extrinsics[1, 2] + " " + extrinsics[1, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[2, 1] + " " + extrinsics[2, 2] + " " + extrinsics[2, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[3, 1] + " " + extrinsics[3, 2] + " " + extrinsics[3, 3]);
+        extrinsicsWrite.Close();
+
         //tex_transparent.ReadPixels(grab_area, 0, 0);
         //tex_transparent.Apply();
         // Encode the resulting output texture to a byte array then write to the file
@@ -88,6 +113,23 @@ public class TakeScreenshot : MonoBehaviour
         Texture2D.Destroy(tex_EXR);
         counter++;
     }
+
+
+    public Matrix4x4 generateIntrinsicMatrix(Camera cam, int width, int height) {
+        Matrix4x4 intrinsics = Matrix4x4.zero;
+        /*
+         [-f  s  px
+          0  -af py
+          0   0  1]  s=skew, a=aspect ratio, f=focal length, (px,py) = principal point
+        */
+        intrinsics[0, 0] = -cam.focalLength;
+        intrinsics[1, 1] = -cam.focalLength * cam.aspect;
+        intrinsics[0, 2] = cam.lensShift.x * width + width / 2.0f;
+        intrinsics[1, 2] = cam.lensShift.y * height + height / 2.0f;
+        intrinsics[2, 2] = 1;
+        return intrinsics;
+    }
+    
 
     void Update()
     {
