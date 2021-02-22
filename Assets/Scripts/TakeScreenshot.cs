@@ -26,9 +26,10 @@ public class TakeScreenshot : MonoBehaviour
         {
             Matrix4x4 intrinsics = cam.projectionMatrix;
             var textWrite = File.CreateText(path + "Parameters/intrinsics.txt");
-            textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2]);
-            textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2]);
-            textWrite.WriteLine(intrinsics[2, 0] + " " + intrinsics[2, 1] + " " + intrinsics[2, 2]);
+            textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2] + " " + intrinsics[0,3]);
+            textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2] + " " + intrinsics[1,3]);
+            textWrite.WriteLine(intrinsics[2, 0] + " " + intrinsics[2, 1] + " " + intrinsics[2, 2] + " " + intrinsics[2,3]);
+            textWrite.WriteLine(intrinsics[3, 0] + " " + intrinsics[3, 1] + " " + intrinsics[3, 2] + " " + intrinsics[3, 3]);
             textWrite.Close();
         }
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
