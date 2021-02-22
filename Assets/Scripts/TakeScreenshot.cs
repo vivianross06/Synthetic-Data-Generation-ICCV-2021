@@ -24,7 +24,7 @@ public class TakeScreenshot : MonoBehaviour
         path = Application.dataPath + "/../Images/";
         if (!File.Exists(path + "Parameters/intrinsics.txt"))
         {
-            Matrix4x4 intrinsics = generateIntrinsicMatrix(cam, width, height);
+            Matrix4x4 intrinsics = cam.projectionMatrix;
             var textWrite = File.CreateText(path + "Parameters/intrinsics.txt");
             textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2]);
             textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2]);
@@ -113,24 +113,7 @@ public class TakeScreenshot : MonoBehaviour
         Texture2D.Destroy(tex_PNG);
         Texture2D.Destroy(tex_EXR);
         counter++;
-    }
-
-
-    public Matrix4x4 generateIntrinsicMatrix(Camera cam, int width, int height) {
-        Matrix4x4 intrinsics = Matrix4x4.zero;
-        /*
-         [-f  s  px
-          0  -af py
-          0   0  1]  s=skew, a=aspect ratio, f=focal length, (px,py) = principal point
-        */
-        intrinsics[0, 0] = -cam.focalLength;
-        intrinsics[1, 1] = -cam.focalLength * cam.aspect;
-        intrinsics[0, 2] = cam.lensShift.x * width + width / 2.0f;
-        intrinsics[1, 2] = cam.lensShift.y * height + height / 2.0f;
-        intrinsics[2, 2] = 1;
-        return intrinsics;
-    }
-    
+    } 
 
     void Update()
     {
