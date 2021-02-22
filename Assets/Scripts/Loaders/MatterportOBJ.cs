@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using OmniLoaderUnity;
 
-public class MatterportOBJ : MonoBehaviour
+public class MatterportOBJ : Loader
 {
     public string house= "17DRP5sb8fy"; //17DRP5sb8fy
     string error = string.Empty;
@@ -15,7 +15,7 @@ public class MatterportOBJ : MonoBehaviour
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    private void Load()
+    public override void Load()
     {
         string[] dir = Directory.GetDirectories(Config.MATTERPORT_HOME + house + "/matterport_mesh/");
         //string[] dir = Directory.GetDirectories(Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/");
@@ -64,7 +64,7 @@ public class MatterportOBJ : MonoBehaviour
         bb.Item1 = bounds.min;
         bb.Item2 = bounds.max;
         bbl.Add(bb);
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        OL_GLOBAL_INFO.BBOX_LIST = bbl;
     }
 
     /*

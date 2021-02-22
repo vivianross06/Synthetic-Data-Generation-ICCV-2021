@@ -43,7 +43,7 @@ Shader "Custom/Depthmap"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 col.xyz = i.worldpos;
                 //float dist = length(_WorldSpaceCameraPos - i.worldpos)*0.1;
-                float dist = mul(-1*UNITY_MATRIX_V, i.worldpos-_WorldSpaceCameraPos).z * 0.1;
+                float dist = mul(UNITY_MATRIX_V, -1*i.worldpos).z * 0.1;
                 col = float4(dist, dist, dist, 1.0);
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

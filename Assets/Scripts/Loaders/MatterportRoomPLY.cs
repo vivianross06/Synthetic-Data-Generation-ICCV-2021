@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using OmniLoaderUnity;
 
-public class MatterportRoomPLY : MonoBehaviour
+public class MatterportRoomPLY : Loader
 {
     public enum ShaderEnum { RGB, SemanticShader, DepthMap };
     public ShaderEnum shaders;
@@ -20,7 +20,7 @@ public class MatterportRoomPLY : MonoBehaviour
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
     // Start is called before the first frame update
-    void Load()
+    public override void Load()
     {
         if (shaders == ShaderEnum.RGB)
         {
@@ -95,7 +95,7 @@ public class MatterportRoomPLY : MonoBehaviour
 
         fromObj.SetActive(false);
 
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        OL_GLOBAL_INFO.BBOX_LIST = bbl;
     }
 
 

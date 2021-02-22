@@ -18,8 +18,8 @@ public struct ScreenShotType
 
 public class OmniLoader : MonoBehaviour
 {
-    [HideInInspector] public MonoScript Agent;
-    [HideInInspector] public MonoScript Loader; //Loader is responsible for NavMesh generation
+    [HideInInspector] public MonoScript AgentScript;
+    [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public uint agentWaypoints = 40;
@@ -43,18 +43,26 @@ public class OmniLoader : MonoBehaviour
             OL_GLOBAL_INFO.MAX_ROTATION = 40.0f;
         }
 
-        agentObj.AddComponent(Agent.GetClass());
-        agentObj.AddComponent(ScreenshotScript.GetClass());
+        if(AgentScript != null)
+            agentObj.AddComponent(AgentScript.GetClass());
+        if (ScreenshotScript != null)
+            agentObj.AddComponent(ScreenshotScript.GetClass());
         NavMeshAgent nma = agentObj.AddComponent<NavMeshAgent>();
         nma.enabled = false;
         //modify desired values of NavMeshAgent component here.
         //example: nma.speed = 3.5f;
-        GameObject camera = Camera.main.gameObject;
-        camera.transform.SetParent(agentObj.transform);
-        camera.transform.localPosition = new Vector3(0, 1.5f, 0);
-        camera.transform.localRotation = Quaternion.identity;
+        if (AgentScript != null)
+        {
+            GameObject camera = Camera.main.gameObject;
+            camera.transform.SetParent(agentObj.transform);
+            camera.transform.localPosition = new Vector3(0, 1.5f, 0);
+            camera.transform.localRotation = Quaternion.identity;
+        }
+        if (LoaderScript != null)
+            ((Loader)GetComponent(LoaderScript.GetClass())).Load();
+        if (AgentScript != null)
+            ((Agent)agentObj.GetComponent(AgentScript.GetClass())).StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
 
-        ((MonoBehaviour)GetComponent(Loader.GetClass())).Invoke("Load", 0.0f);
     }
 
     // Update is called once per frame
@@ -62,6 +70,19 @@ public class OmniLoader : MonoBehaviour
     {
 
     }
+}
+
+
+public class Loader : MonoBehaviour
+{
+    public virtual void Load()
+    { }
+}
+
+public class Agent : MonoBehaviour
+{
+    public virtual void StartAgent(List<(Vector3, Vector3)> bboxlist)
+    { }
 }
 
 public static class OL_GLOBAL_INFO
@@ -72,6 +93,7 @@ public static class OL_GLOBAL_INFO
     public static int TOTAL_POINTS = 40;
     public static float DISTANCE_BETWEEN_SCREENSHOTS = 1.0f;
     public static float MAX_ROTATION = 90.0f;
+    public static List<(Vector3, Vector3)> BBOX_LIST;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;

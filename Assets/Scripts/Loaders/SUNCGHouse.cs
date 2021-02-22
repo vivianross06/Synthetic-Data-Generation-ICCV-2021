@@ -6,7 +6,7 @@ using System.IO;
 using System;
 using UnitySUNCG;
 
-public class SUNCGHouse : MonoBehaviour
+public class SUNCGHouse : Loader
 {
     public House house;
     private GameObject houseObject;
@@ -15,7 +15,7 @@ public class SUNCGHouse : MonoBehaviour
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    void Load()
+    public override void Load()
     {
         //string houseId = "000d939dc2257995adcb27483b04ad04";
         house = Scene.GetHouseById(houseId);
@@ -52,7 +52,7 @@ public class SUNCGHouse : MonoBehaviour
         }
        navAgent = OL_GLOBAL_INFO.AGENT;
        navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
-       navAgent.GetComponent<SimpleAgent>().StartAgent(bboxlist);
+       OL_GLOBAL_INFO.BBOX_LIST = bboxlist;
 
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using OmniLoaderUnity;
 
-public class CampRoberts : MonoBehaviour
+public class CampRoberts : Loader
 {
     public int LevelOfDetail;
     string error = string.Empty;
@@ -16,7 +16,7 @@ public class CampRoberts : MonoBehaviour
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    private void Load()
+    public override void Load()
     {
         parentObject = new GameObject("CR");
         string[] dir = Directory.GetDirectories(Config.CR_HOME);
@@ -82,7 +82,8 @@ public class CampRoberts : MonoBehaviour
         bb.Item1 = bounds.min;
         bb.Item2 = bounds.max;
         bbl.Add(bb);
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        OL_GLOBAL_INFO.BBOX_LIST = bbl;
+
     }
 
     /*

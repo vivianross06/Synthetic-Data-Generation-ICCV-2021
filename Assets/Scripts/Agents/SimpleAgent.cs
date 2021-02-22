@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SimpleAgent : MonoBehaviour
+public class SimpleAgent : Agent
 {
     private TakeScreenshot screenshot;
     private NavMeshAgent navMeshAgent;
     //private List<Vector3> destList = new List<Vector3>();
     private List<List<Vector3>> regions = new List<List<Vector3>>();
-    private Vector3 myDest = new Vector3(0, 0, 0);
     private Vector3 startPos;
     private float scStep;
     private Quaternion finalRotation;
@@ -28,7 +27,6 @@ public class SimpleAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        myDest = navMeshAgent.destination;
         if (mouseMode)
         {
             if (Input.GetMouseButton(0))
@@ -69,7 +67,7 @@ public class SimpleAgent : MonoBehaviour
         }
     }
 
-    public void StartAgent(List<(Vector3, Vector3)> bboxlist) {
+    public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
         scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
         int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
         screenshot = GetComponent<TakeScreenshot>();
@@ -200,9 +198,6 @@ public class SimpleAgent : MonoBehaviour
             foreach (Vector3 v in regions[i])
                 Gizmos.DrawSphere(v, radius);
         }
-        Gizmos.color = Color.white;
-        if (Application.isPlaying)
-            Gizmos.DrawSphere(myDest, radius+0.1f);
 
     }
 

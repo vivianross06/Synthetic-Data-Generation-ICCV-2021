@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using OmniLoaderUnity;
 //using Loaders;
 
-public class MatterportPLY : MonoBehaviour
+public class MatterportPLY : Loader
 {
     private string currentShader;
     private GameObject parentObj;
@@ -19,7 +19,7 @@ public class MatterportPLY : MonoBehaviour
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
     // Use this for initialization
-    void Load()
+    public override void Load()
     {
         if (shaders == ShaderEnum.RGB)
         {
@@ -83,7 +83,7 @@ public class MatterportPLY : MonoBehaviour
 
         fromObj.SetActive(false);
 
-        navAgent.GetComponent<SimpleAgent>().StartAgent(bbl);
+        OL_GLOBAL_INFO.BBOX_LIST = bbl;
     }
 
     // Update is called once per frame

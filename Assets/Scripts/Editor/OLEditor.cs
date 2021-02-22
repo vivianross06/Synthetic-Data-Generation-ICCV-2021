@@ -19,51 +19,51 @@ public class OLEditor : Editor
 		OmniLoader ol = (OmniLoader)target;
 		SerializedObject GetTarget = new SerializedObject(target);
 
-		if (ol.Loader == null)
+		if (ol.LoaderScript == null)
 			loaderType = null;
 		else
-			loaderType = ol.Loader.GetClass();
+			loaderType = ol.LoaderScript.GetClass();
 		EditorGUI.BeginChangeCheck();
-		ol.Loader = (MonoScript)EditorGUILayout.ObjectField("Loader", ol.Loader, typeof(MonoScript), false);
+		ol.LoaderScript = (MonoScript)EditorGUILayout.ObjectField("Loader", ol.LoaderScript, typeof(MonoScript), false);
 		if (EditorGUI.EndChangeCheck() && !Application.isPlaying)
 		{
-			if (ol.Loader == null || loaderType != ol.Loader.GetClass())
+			if (ol.LoaderScript == null || loaderType != ol.LoaderScript.GetClass())
 			{
-				if (ol.Loader != null)
+				if (ol.LoaderScript != null)
 				{
-					ol.gameObject.AddComponent(ol.Loader.GetClass());
+					ol.gameObject.AddComponent(ol.LoaderScript.GetClass());
 				}
 				else
 				{
 					if (loaderType != null)
 						DestroyImmediate(ol.gameObject.GetComponent(loaderType));
 				}
-				if (loaderType != null && ol.Loader != null)
+				if (loaderType != null && ol.LoaderScript != null)
 					DestroyImmediate(ol.gameObject.GetComponent(loaderType));
 			}
 		}
 
-		if (ol.Agent == null)
+		if (ol.AgentScript == null)
 			agentType = null;
 		else
-			agentType = ol.Agent.GetClass();
+			agentType = ol.AgentScript.GetClass();
 		//EditorGUI.BeginChangeCheck();
-		ol.Agent = (MonoScript)EditorGUILayout.ObjectField("Agent", ol.Agent, typeof(MonoScript), false);
+		ol.AgentScript = (MonoScript)EditorGUILayout.ObjectField("Agent", ol.AgentScript, typeof(MonoScript), false);
 		/*if (EditorGUI.EndChangeCheck())
 		{
 			//Code that runs when a script is selected.
-			if (ol.Agent == null || agentType != ol.Agent.GetClass())
+			if (ol.AgentScript == null || agentType != ol.AgentScript.GetClass())
 			{
-				if (ol.Agent != null)
+				if (ol.AgentScript != null)
 				{
-					ol.gameObject.AddComponent(ol.Agent.GetClass());
+					ol.gameObject.AddComponent(ol.AgentScript.GetClass());
 				}
 				else
 				{
 					if(agentType != null)
 						DestroyImmediate(ol.gameObject.GetComponent(agentType));
 				}
-				if (agentType != null && ol.Agent != null)
+				if (agentType != null && ol.AgentScript != null)
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
