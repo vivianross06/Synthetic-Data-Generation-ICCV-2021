@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7120e3c4a1583a7499a6c43de97f27fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Agent: {fileID: 0}
+  AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
   LoaderScript: {fileID: 11500000, guid: 44cb63c2dd5c049af865b7d31bad5363, type: 3}
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs:
@@ -254,6 +254,9 @@ MonoBehaviour:
   - shader: {fileID: 4800000, guid: 59a3c9c901fac4b339dbbd6dd0343135, type: 3}
     directoryName: Depth
     fileType: 1
+  - shader: {fileID: 4800000, guid: 9a61c778e67ad9d4fbf87be603e2a13b, type: 3}
+    directoryName: Semantics
+    fileType: 0
   agentWaypoints: 800
   stepDistance: 1
   flythroughMode: 1

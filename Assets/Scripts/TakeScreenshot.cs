@@ -93,12 +93,13 @@ public class TakeScreenshot : MonoBehaviour
             string savePath = path + dir + filename + countString + extention;
             File.WriteAllBytes(savePath, Shot);
         }
-        Matrix4x4 extrinsics = cam.worldToCameraMatrix;
+        //Matrix4x4 extrinsics = cam.worldToCameraMatrix;
+        Matrix4x4 extrinsics = Matrix4x4.TRS(cam.transform.position, cam.transform.rotation, new Vector3(1,1,1));
         var extrinsicsWrite = File.CreateText(path + "Parameters/extrinsics" + countString + ".txt");
         extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[0, 1] + " " + extrinsics[0, 2] + " " + extrinsics[0, 3]);
-        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[1, 1] + " " + extrinsics[1, 2] + " " + extrinsics[1, 3]);
-        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[2, 1] + " " + extrinsics[2, 2] + " " + extrinsics[2, 3]);
-        extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[3, 1] + " " + extrinsics[3, 2] + " " + extrinsics[3, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[1, 0] + " " + extrinsics[1, 1] + " " + extrinsics[1, 2] + " " + extrinsics[1, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[2, 0] + " " + extrinsics[2, 1] + " " + extrinsics[2, 2] + " " + extrinsics[2, 3]);
+        extrinsicsWrite.WriteLine(extrinsics[3, 0] + " " + extrinsics[3, 1] + " " + extrinsics[3, 2] + " " + extrinsics[3, 3]);
         extrinsicsWrite.Close();
 
         //tex_transparent.ReadPixels(grab_area, 0, 0);
