@@ -95,7 +95,22 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(screenshotType));
 			}
 		}
+		if (GUILayout.Button("Take Screenshot"))
+		{
+			Screenshoter[] components = GameObject.FindObjectsOfType<Screenshoter> ();
+			if (components.Length == 0)
+			{
+				Screenshoter sc = (Screenshoter)Camera.main.gameObject.AddComponent(ol.ScreenshotScript.GetClass());
+				sc.CaptureScreenshot(Camera.main, 1710, 840);
+				DestroyImmediate(sc);
 
+			}
+			else
+			{
+				Screenshoter sc = components[0];
+				sc.CaptureScreenshot(Camera.main, 1710, 840);
+			}
+		}
 
 		//List code starts after here.
 		//Code for custom class list in inspector originially from user ForceX of Unity Fourm.

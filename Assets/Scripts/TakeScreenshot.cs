@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 
-public class TakeScreenshot : MonoBehaviour
+public class TakeScreenshot : Screenshoter
 {
     private string path;
     private string filename;
@@ -18,7 +18,7 @@ public class TakeScreenshot : MonoBehaviour
         Directory.CreateDirectory(path); //creates directory
         Directory.CreateDirectory(path + "Parameters/");
     }
-    public void CaptureScreenshot(Camera cam, int width, int height)
+    public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;
         path = Application.dataPath + "/../Images/";
@@ -112,8 +112,8 @@ public class TakeScreenshot : MonoBehaviour
         cam.targetTexture = bak_cam_targetTexture;
         RenderTexture.active = bak_RenderTexture_active;
         RenderTexture.ReleaseTemporary(render_texture);
-        Texture2D.Destroy(tex_PNG);
-        Texture2D.Destroy(tex_EXR);
+        Texture2D.DestroyImmediate(tex_PNG);
+        Texture2D.DestroyImmediate(tex_EXR);
         counter++;
     } 
 

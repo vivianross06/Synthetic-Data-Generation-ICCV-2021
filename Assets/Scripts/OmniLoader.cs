@@ -85,6 +85,12 @@ public class Agent : MonoBehaviour
     { }
 }
 
+public class Screenshoter : MonoBehaviour
+{
+    public virtual void CaptureScreenshot(Camera cam, int width, int height)
+    { }
+}
+
 public static class OL_GLOBAL_INFO
 {
     public static GameObject AGENT;
