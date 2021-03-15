@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using System.IO;
 using System.Collections.Generic;
 
@@ -39,7 +40,7 @@ public class TakeScreenshot : Screenshoter
         var bak_cam_clearFlags = cam.clearFlags;
         var bak_RenderTexture_active = RenderTexture.active;
         var tex_PNG = new Texture2D(width, height, TextureFormat.RGBA32, false);
-        var tex_EXR = new Texture2D(width, height, TextureFormat.RGBAFloat, false);
+        var tex_EXR = new Texture2D(width, height, TextureFormat.R16, false, true);
         // Must use 24-bit depth buffer to be able to fill background.
         var render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
         var grab_area = new Rect(0, 0, width, height);
@@ -60,6 +61,17 @@ public class TakeScreenshot : Screenshoter
         }
         for (int i=0; i< screenshotList.Count; i++)
         {
+            if(screenshotList[i].fileType == FileEnum.EXR)
+			{
+                //Read in fixed4 values from fragment shader
+                render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGBFloat);
+            }
+            else
+			{
+                render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
+            }
+            RenderTexture.active = render_texture;
+            cam.targetTexture = render_texture;
             if (screenshotList[i].shader != null)
                 cam.RenderWithShader(screenshotList[i].shader, "");
             else
@@ -85,10 +97,21 @@ public class TakeScreenshot : Screenshoter
             }
             else if(screenshotList[i].fileType == FileEnum.EXR)
             {
-                tex_EXR.ReadPixels(grab_area, 0, 0);
-                tex_EXR.Apply();
-                Shot = ImageConversion.EncodeToEXR(tex_EXR);
-                extention = ".exr";
+                var tex_temp = new Texture2D(width, height, TextureFormat.RGBAFloat, false, true);
+                tex_temp.ReadPixels(grab_area, 0, 0);
+                var data = tex_temp.GetRawTextureData<Color>();
+                byte[] depth_data = new byte[2 * width * height];
+                for(int j=0; j<(width * height); j++)
+				{
+                    float dist = Mathf.Min(65535.0f, data[j][3] - 1.0f);
+                    ushort depth = (ushort)(Mathf.RoundToInt(dist));
+                    depth_data[j * 2] = (byte)(depth);
+                    depth_data[(j * 2) + 1] = (byte)(depth >> 8);
+                }
+                Texture2D.DestroyImmediate(tex_temp);
+                tex_EXR.LoadRawTextureData(depth_data);
+                Shot = ImageConversion.EncodeToPNG(tex_EXR);
+                extention = ".png";
             }
             string savePath = path + dir + filename + countString + extention;
             File.WriteAllBytes(savePath, Shot);

@@ -59,7 +59,7 @@ public class SimpleAgent : Agent
                 }
             }
         }
-        transform.GetChild(0).rotation = Quaternion.Slerp(currentRotation, finalRotation, Mathf.Clamp(1-(navMeshAgent.remainingDistance/totalDistance), 0 ,1));
+        //transform.GetChild(0).rotation = Quaternion.Slerp(currentRotation, finalRotation, Mathf.Clamp(1-(navMeshAgent.remainingDistance/totalDistance), 0 ,1));
         if (Vector3.Distance(transform.position, startPos) >= scStep)
 		{
             startPos = transform.position;
