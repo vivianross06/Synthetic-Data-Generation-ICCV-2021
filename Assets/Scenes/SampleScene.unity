@@ -245,13 +245,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
-  LoaderScript: {fileID: 11500000, guid: 44cb63c2dd5c049af865b7d31bad5363, type: 3}
+  LoaderScript: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
-  scs:
-  - shader: {fileID: 4800000, guid: 59a3c9c901fac4b339dbbd6dd0343135, type: 3}
-    directoryName: Depth
-    fileType: 1
-  agentWaypoints: 800
+  scs: []
+  agentWaypoints: 200
   stepDistance: 1
   flythroughMode: 1
 --- !u!4 &743955941
@@ -277,11 +274,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 743955939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44cb63c2dd5c049af865b7d31bad5363, type: 3}
+  m_Script: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   house: 17DRP5sb8fy
-  shaders: 0
 --- !u!1 &959729371
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,6 +290,7 @@ GameObject:
   - component: {fileID: 959729372}
   - component: {fileID: 959729373}
   - component: {fileID: 959729375}
+  - component: {fileID: 959729376}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -376,5 +373,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &959729376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959729371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efe6f815a167e4ffdb5504983af57616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

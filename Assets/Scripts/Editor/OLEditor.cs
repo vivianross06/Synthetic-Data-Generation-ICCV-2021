@@ -67,7 +67,6 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
-
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughMode"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
@@ -157,7 +156,7 @@ public class OLEditor : Editor
             ScreenShotType sct = new ScreenShotType();
             sct.shader = null;
             sct.directoryName = "";
-            sct.fileType = FileEnum.PNG;
+            sct.formatType = FormatEnum.RGB;
             ol.scs.Add(sct);
         }
 
@@ -171,7 +170,7 @@ public class OLEditor : Editor
             SerializedProperty MyListRef = ThisList.GetArrayElementAtIndex(i);
             SerializedProperty MyInt = MyListRef.FindPropertyRelative("shader");
             SerializedProperty MyFloat = MyListRef.FindPropertyRelative("directoryName");
-            SerializedProperty MyVect3 = MyListRef.FindPropertyRelative("fileType");
+            SerializedProperty MyVect3 = MyListRef.FindPropertyRelative("formatType");
 			//SerializedProperty MyGO = MyListRef.FindPropertyRelative("AnGO");
 
 

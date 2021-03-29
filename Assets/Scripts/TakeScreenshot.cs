@@ -39,8 +39,8 @@ public class TakeScreenshot : Screenshoter
         var bak_cam_targetTexture = cam.targetTexture;
         var bak_cam_clearFlags = cam.clearFlags;
         var bak_RenderTexture_active = RenderTexture.active;
-        var tex_PNG = new Texture2D(width, height, TextureFormat.RGBA32, false);
-        var tex_EXR = new Texture2D(width, height, TextureFormat.R16, false, true);
+        var tex_RGB = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        var tex_DEPTH = new Texture2D(width, height, TextureFormat.R16, false, true);
         // Must use 24-bit depth buffer to be able to fill background.
         var render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
         var grab_area = new Rect(0, 0, width, height);
@@ -51,17 +51,10 @@ public class TakeScreenshot : Screenshoter
         // Simple: use a clear background
         //cam.backgroundColor = Color.clear;
         //cam.Render();
-        if (counter < 10)
-        {
-            countString = "0" + counter.ToString();
-        }
-        else
-        {
-            countString = counter.ToString();
-        }
+        countString = counter.ToString().PadLeft(4, '0');
         for (int i=0; i< screenshotList.Count; i++)
         {
-            if(screenshotList[i].fileType == FileEnum.EXR)
+            if(screenshotList[i].formatType == FormatEnum.DepthMap)
 			{
                 //Read in fixed4 values from fragment shader
                 render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGBFloat);
@@ -88,14 +81,14 @@ public class TakeScreenshot : Screenshoter
             }
             string extention = "";
             byte[] Shot = new byte[0];
-            if (screenshotList[i].fileType == FileEnum.PNG)
+            if (screenshotList[i].formatType == FormatEnum.RGB)
             {
-                tex_PNG.ReadPixels(grab_area, 0, 0);
-                tex_PNG.Apply();
-                Shot = ImageConversion.EncodeToPNG(tex_PNG);
+                tex_RGB.ReadPixels(grab_area, 0, 0);
+                tex_RGB.Apply();
+                Shot = ImageConversion.EncodeToPNG(tex_RGB);
                 extention = ".png";
             }
-            else if(screenshotList[i].fileType == FileEnum.EXR)
+            else if(screenshotList[i].formatType == FormatEnum.DepthMap)
             {
                 var tex_temp = new Texture2D(width, height, TextureFormat.RGBAFloat, false, true);
                 tex_temp.ReadPixels(grab_area, 0, 0);
@@ -109,8 +102,8 @@ public class TakeScreenshot : Screenshoter
                     depth_data[(j * 2) + 1] = (byte)(depth >> 8);
                 }
                 Texture2D.DestroyImmediate(tex_temp);
-                tex_EXR.LoadRawTextureData(depth_data);
-                Shot = ImageConversion.EncodeToPNG(tex_EXR);
+                tex_DEPTH.LoadRawTextureData(depth_data);
+                Shot = ImageConversion.EncodeToPNG(tex_DEPTH);
                 extention = ".png";
             }
             string savePath = path + dir + filename + countString + extention;
@@ -135,8 +128,8 @@ public class TakeScreenshot : Screenshoter
         cam.targetTexture = bak_cam_targetTexture;
         RenderTexture.active = bak_RenderTexture_active;
         RenderTexture.ReleaseTemporary(render_texture);
-        Texture2D.DestroyImmediate(tex_PNG);
-        Texture2D.DestroyImmediate(tex_EXR);
+        Texture2D.DestroyImmediate(tex_RGB);
+        Texture2D.DestroyImmediate(tex_DEPTH);
         counter++;
     } 
 

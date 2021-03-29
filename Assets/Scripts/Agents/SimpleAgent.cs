@@ -5,61 +5,49 @@ using UnityEngine.AI;
 
 public class SimpleAgent : Agent
 {
-    private TakeScreenshot screenshot;
+    private Screenshoter screenshot;
     private NavMeshAgent navMeshAgent;
-    //private List<Vector3> destList = new List<Vector3>();
     private List<List<Vector3>> regions = new List<List<Vector3>>();
     private Vector3 startPos;
     private float scStep;
-    private Quaternion finalRotation;
-    private Quaternion currentRotation;
+    private Quaternion prevRotation;
+    private Quaternion nextRotation;
     private float totalDistance = 1;
-    public bool mouseMode = false; //true = the destination is set by clicking and/or holding left click down. false = roam randomly between a list random points, where.
+    public float elapsedTime;
+    private float camTimer;
 
-    // Start is called before the first frame update
-    /*void Start()
-    {
-        screenshot = this.GetComponent<TakeScreenshot>();
-        navMeshAgent = this.GetComponent<NavMeshAgent>();
-        navMeshAgent.enabled = false;
-    }*/
 
     // Update is called once per frame
     void Update()
     {
-        if (mouseMode)
-        {
-            if (Input.GetMouseButton(0))
+        elapsedTime += Time.deltaTime;
+        camTimer += Time.deltaTime;
+        if(elapsedTime > OL_GLOBAL_INFO.MAX_TIME_BETWEEN_POINTS)
+		{
+            elapsedTime = 0.0f;
+            navMeshAgent.Warp(navMeshAgent.destination);
+		}
+        if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
+            elapsedTime = 0.0f;
+            if (regions.Count > 0)
             {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit))
+                Vector3 v = getRandomPoint();
+                if (navMeshAgent.enabled)
                 {
-                    navMeshAgent.SetDestination(hit.point);
-                    screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
+                    navMeshAgent.SetDestination(v);
+                    NavMeshPath path = new NavMeshPath();
+                    NavMesh.CalculatePath(transform.position, v, NavMesh.AllAreas, path);
+                    totalDistance = PathLength(path);
                 }
             }
         }
-        else {
-            if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
-                if (regions.Count > 0)
-                {
-                    Vector3 v = getRandomPoint();
-                    if (navMeshAgent.enabled)
-                    {
-                        navMeshAgent.SetDestination(v);
-                        currentRotation = finalRotation;
-                        float angle = Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION, OL_GLOBAL_INFO.MAX_ROTATION);
-                        finalRotation *= Quaternion.Euler(Vector3.up * angle);
-                        NavMeshPath path = new NavMeshPath();
-                        NavMesh.CalculatePath(transform.position, v, NavMesh.AllAreas, path);
-                        totalDistance = PathLength(path);
-                    }
-                    
-                }
-            }
+        if (OL_GLOBAL_INFO.FLYTHROUGH_MODE == ModeEnum.Human)
+        {
+            float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (OL_GLOBAL_INFO.MAX_ROTATION_X + OL_GLOBAL_INFO.MAX_ROTATION_Y));
+            transform.GetChild(0).rotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+            Vector3 eulerRotation = transform.GetChild(0).eulerAngles;
+            transform.GetChild(0).rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
         }
-        //transform.GetChild(0).rotation = Quaternion.Slerp(currentRotation, finalRotation, Mathf.Clamp(1-(navMeshAgent.remainingDistance/totalDistance), 0 ,1));
         if (Vector3.Distance(transform.position, startPos) >= scStep)
 		{
             startPos = transform.position;
@@ -70,7 +58,7 @@ public class SimpleAgent : Agent
     public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
         scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
         int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
-        screenshot = GetComponent<TakeScreenshot>();
+        screenshot = GetComponent<Screenshoter>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         //make regions
         NavMeshPath path = new NavMeshPath();
@@ -94,18 +82,16 @@ public class SimpleAgent : Agent
 		}
         transform.position = regions[0][0];
         startPos = transform.position;
-        currentRotation = transform.rotation;
-        finalRotation = currentRotation;
+        elapsedTime = 0.0f;
         navMeshAgent.enabled = true;
         gameObject.SetActive(true);
+        StartCoroutine(SetCameraLookAngle());
     }
 
     public void ResetAgent(List<List<Vector3>> regions)
     {
         if (regions.Count > 0)
         {
-            currentRotation = transform.rotation;
-            finalRotation = currentRotation;
             transform.position = regions[0][0];
             startPos = transform.position;
             navMeshAgent.enabled = true;
@@ -217,5 +203,16 @@ public class SimpleAgent : Agent
             i++;
         }
         return lengthSoFar;
+    }
+
+    IEnumerator SetCameraLookAngle()
+    {
+        for (; ; )
+        {
+            camTimer = 0.0f;
+            prevRotation = transform.GetChild(0).rotation;
+            nextRotation = Quaternion.Euler(Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_X), Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION_Y, OL_GLOBAL_INFO.MAX_ROTATION_Y), 0);
+            yield return new WaitForSeconds(OL_GLOBAL_INFO.CAM_ROTATION_FREQUENCY);
+        }
     }
 }
