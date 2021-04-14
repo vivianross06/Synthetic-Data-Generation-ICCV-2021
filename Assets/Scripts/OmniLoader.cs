@@ -6,7 +6,6 @@ using UnityEngine.AI;
 using UnityEditor;
 
 public enum FormatEnum { RGB, DepthMap };
-public enum ModeEnum { Robot, Human };
 
 [System.Serializable]
 public struct ScreenShotType
@@ -24,7 +23,8 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public uint agentWaypoints = 40;
     [HideInInspector] public float stepDistance = 1.0f;
-    [HideInInspector] public ModeEnum flythroughMode;
+    [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0,0);
+    [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0,0);
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,11 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
         OL_GLOBAL_INFO.TOTAL_POINTS = Convert.ToInt32(agentWaypoints);
         OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS = stepDistance;
-        OL_GLOBAL_INFO.FLYTHROUGH_MODE = flythroughMode;
+        OL_GLOBAL_INFO.MIN_ROTATION_Y = horizontalAngleRange[0];
+        OL_GLOBAL_INFO.MAX_ROTATION_Y = horizontalAngleRange[1];
+        OL_GLOBAL_INFO.MIN_ROTATION_X = verticalAngleRange[0];
+        OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];
+
         /*if (flythroughMode == ModeEnum.Robot)
         {
             OL_GLOBAL_INFO.MAX_ROTATION = 90.0f;
@@ -102,11 +106,12 @@ public static class OL_GLOBAL_INFO
     public static int TOTAL_POINTS = 40;
     public static float DISTANCE_BETWEEN_SCREENSHOTS = 0.1f;
     public static float MAX_TIME_BETWEEN_POINTS = 60.0f;
-    public static float MAX_ROTATION_X = 40.0f;
-    public static float MAX_ROTATION_Y = 80.0f;
+    public static float MIN_ROTATION_X = 0f;
+    public static float MAX_ROTATION_X = 0f;
+    public static float MIN_ROTATION_Y = 0f;
+    public static float MAX_ROTATION_Y = 0f;
     public static float CAM_ROTATION_DURATION = 0.5f;
     public static float CAM_ROTATION_FREQUENCY = 0.5f;
-    public static ModeEnum FLYTHROUGH_MODE;
     public static List<(Vector3, Vector3)> BBOX_LIST;
 
     public static void setLayerOfAll(GameObject root, int layer) {

@@ -67,7 +67,8 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
-		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughMode"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("horizontalAngleRange"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("verticalAngleRange"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
 		
