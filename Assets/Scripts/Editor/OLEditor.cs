@@ -42,6 +42,7 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(loaderType));
 			}
 		}
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("loadAll"));
 
 		if (ol.AgentScript == null)
 			agentType = null;

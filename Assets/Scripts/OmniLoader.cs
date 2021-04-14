@@ -20,6 +20,7 @@ public class OmniLoader : MonoBehaviour
 {
     [HideInInspector] public MonoScript AgentScript;
     [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
+    [HideInInspector] public Boolean loadAll; //determines whether to load every scene in directory or not
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public uint agentWaypoints = 40;
@@ -62,7 +63,16 @@ public class OmniLoader : MonoBehaviour
             camera.transform.localRotation = Quaternion.identity;
         }
         if (LoaderScript != null)
-            ((Loader)GetComponent(LoaderScript.GetClass())).Load();
+        {
+            if (loadAll == false)
+            {
+                ((Loader)GetComponent(LoaderScript.GetClass())).Load();
+            }
+            else
+            {
+                ((Loader)GetComponent(LoaderScript.GetClass())).LoadNextScene();
+            }
+        }
         if (AgentScript != null)
             ((Agent)agentObj.GetComponent(AgentScript.GetClass())).StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
 
@@ -71,7 +81,17 @@ public class OmniLoader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (loadAll == true)
+        {
+            GameObject agent = GameObject.Find("Agent");
+            SimpleAgent agent1 = agent.GetComponent<SimpleAgent>();
+            bool isDone = agent1.done;
+            if (isDone == true)
+            {
+                ((Loader)GetComponent(LoaderScript.GetClass())).LoadNextScene();
+            }
 
+        }
     }
 }
 
@@ -79,6 +99,8 @@ public class OmniLoader : MonoBehaviour
 public class Loader : MonoBehaviour
 {
     public virtual void Load()
+    { }
+    public virtual void LoadNextScene()
     { }
 }
 
