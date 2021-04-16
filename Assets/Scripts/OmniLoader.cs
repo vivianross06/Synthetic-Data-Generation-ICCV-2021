@@ -83,12 +83,11 @@ public class OmniLoader : MonoBehaviour
     {
         if (loadAll == true)
         {
-            GameObject agent = GameObject.Find("Agent");
-            SimpleAgent agent1 = agent.GetComponent<SimpleAgent>();
-            bool isDone = agent1.done;
+            bool isDone = OL_GLOBAL_INFO.AGENT.GetComponent<SimpleAgent>().done;
             if (isDone == true)
             {
                 ((Loader)GetComponent(LoaderScript.GetClass())).LoadNextScene();
+                OL_GLOBAL_INFO.AGENT.GetComponent<SimpleAgent>().StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 
         }

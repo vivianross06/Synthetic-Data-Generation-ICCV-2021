@@ -76,7 +76,8 @@ public class SUNCGHouse : Loader
         if (isLoaded == true)
         {
             Destroy(houseObject);
-            Destroy(navAgent);
+            //Destroy(navAgent);
+            isLoaded = false;
         }
         string currentHouseId = ids[index++];
         house = Scene.GetHouseById(currentHouseId);
@@ -115,6 +116,7 @@ public class SUNCGHouse : Loader
         navAgent = OL_GLOBAL_INFO.AGENT;
         navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
         OL_GLOBAL_INFO.BBOX_LIST = bboxlist;
+        isLoaded = true;
     }
 
 }

@@ -58,7 +58,6 @@ public class SimpleAgent : Agent
     }
 
     public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
-        Debug.Log("Starting agent");
         done = false;
         scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
         int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
@@ -94,26 +93,21 @@ public class SimpleAgent : Agent
 
     public void ResetAgent(List<List<Vector3>> regions)
     {
-        Debug.Log("resetting agent");
         if (regions.Count > 0)
         {
-            Debug.Log("regions count in reset: " + regions.Count.ToString());
             transform.position = regions[0][0];
             startPos = transform.position;
             navMeshAgent.enabled = true;
         }
         else
         {
-            Debug.Log("regions empty");
             done = true;
             navMeshAgent.enabled = false;
-            Debug.Log(done);
         }
     }
 
     private Vector3 getRandomPoint()
 	{
-        Debug.Log("getting random point");
         /*
         int x = Random.Range(0, destLen);
         for (int i = 0; i < regions.Count; i++)
@@ -132,7 +126,6 @@ public class SimpleAgent : Agent
         */
         if (regions[0].Count > 0)
         {
-            Debug.Log("regions[0].count: " + regions[0].Count.ToString());
             int x = Random.Range(0, regions[0].Count);
             Vector3 point = regions[0][x];
             regions[0].RemoveAt(x);
@@ -140,10 +133,8 @@ public class SimpleAgent : Agent
         }
         else
         {
-            Debug.Log("removed regions[0]");
             navMeshAgent.enabled = false;
             regions.RemoveAt(0);
-            Debug.Log("regions count: " + regions.Count.ToString());
             ResetAgent(regions);
             return transform.position;
         }

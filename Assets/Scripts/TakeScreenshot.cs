@@ -16,13 +16,22 @@ public class TakeScreenshot : Screenshoter
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         path = Application.dataPath + "/../Images/";
-        Directory.CreateDirectory(path); //creates directory
-        Directory.CreateDirectory(path + "Parameters/");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path); //creates directory
+        }
+        string date = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        path = path + "/" + date + "/";
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path + "/" + System.DateTime.Now);
+            Directory.CreateDirectory(path + "Parameters/");
+        }
     }
     public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;
-        path = Application.dataPath + "/../Images/";
+        //path = Application.dataPath + "/../Images/";
         if (!File.Exists(path + "Parameters/intrinsics.txt"))
         {
             Matrix4x4 intrinsics = cam.projectionMatrix;
