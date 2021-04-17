@@ -57,6 +57,37 @@ public class SimpleAgent : Agent
         }
     }
 
+    public float CalculateMaxAngleRatio(){
+
+        //Code to compute max angle rotation neeed for angleRatio
+        Quaternion Q1 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
+        Quaternion Q2 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
+        Quaternion Q3 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
+        Quaternion Q4 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
+        float[] a = new float[10];
+        a[0] = Quaternion.Angle(Q1, Q1);
+        a[1] = Quaternion.Angle(Q1, Q2);
+        a[2] = Quaternion.Angle(Q1, Q3);
+        a[3] = Quaternion.Angle(Q1, Q4);
+        a[4] = Quaternion.Angle(Q2, Q2);
+        a[5] = Quaternion.Angle(Q2, Q3);
+        a[6] = Quaternion.Angle(Q2, Q4);
+        a[7] = Quaternion.Angle(Q3, Q3);
+        a[8] = Quaternion.Angle(Q3, Q4);
+        a[9] = Quaternion.Angle(Q4, Q4);
+        //Find max value of angles and store it.
+
+        float maxAngle = a[0];
+
+        for (int i=1; i<10; i++){
+
+            if(a[i] > maxAngle)
+                maxAngle = a[i];
+        }
+
+        return maxAngle;
+    }
+
     public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
         done = false;
         scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
@@ -90,6 +121,7 @@ public class SimpleAgent : Agent
         gameObject.SetActive(true);
         maxAngle = CalculateMaxAngleRatio();
         StartCoroutine(SetCameraLookAngle());
+
     }
 
     public void ResetAgent(List<List<Vector3>> regions)

@@ -68,7 +68,6 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
-
 		EditorGUILayout.LabelField("Horizontal Angle Range");
 		EditorGUI.indentLevel++;
 		ol.horizontalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.horizontalAngleRange[0]);
