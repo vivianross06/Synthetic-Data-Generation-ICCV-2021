@@ -15,6 +15,7 @@ public class SimpleAgent : Agent
     private float totalDistance = 1;
     public float elapsedTime;
     private float camTimer;
+    private float maxAngle;
     public bool done = false;
 
 
@@ -43,13 +44,12 @@ public class SimpleAgent : Agent
                 }
             }
         }
-        if (OL_GLOBAL_INFO.FLYTHROUGH_MODE == ModeEnum.Human)
-        {
-            float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (OL_GLOBAL_INFO.MAX_ROTATION_X + OL_GLOBAL_INFO.MAX_ROTATION_Y));
-            transform.GetChild(0).rotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
-            Vector3 eulerRotation = transform.GetChild(0).eulerAngles;
-            transform.GetChild(0).rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
-        }
+
+        float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (maxAngle));
+        transform.GetChild(0).localRotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        Vector3 eulerRotation = transform.GetChild(0).localEulerAngles;
+        transform.GetChild(0).localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
+
         if (Vector3.Distance(transform.position, startPos) >= scStep)
 		{
             startPos = transform.position;
@@ -88,6 +88,7 @@ public class SimpleAgent : Agent
         elapsedTime = 0.0f;
         navMeshAgent.enabled = true;
         gameObject.SetActive(true);
+        maxAngle = CalculateMaxAngleRatio();
         StartCoroutine(SetCameraLookAngle());
     }
 
@@ -177,18 +178,36 @@ public class SimpleAgent : Agent
         return randomPoints;
     }
 
-    void OnDrawGizmos()
+    public float CalculateMaxAngleRatio()
     {
-        float radius = 0.1f;
-        Gizmos.color = Color.red;
-        Color[] colors = { Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.green, Color.magenta, Color.black };
-        for (int i = 0; i < regions.Count; i++)
+
+        //Code to compute max angle rotation neeed for angleRatio
+        Quaternion Q1 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
+        Quaternion Q2 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
+        Quaternion Q3 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
+        Quaternion Q4 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
+        float[] a = new float[10];
+        a[0] = Quaternion.Angle(Q1, Q1);
+        a[1] = Quaternion.Angle(Q1, Q2);
+        a[2] = Quaternion.Angle(Q1, Q3);
+        a[3] = Quaternion.Angle(Q1, Q4);
+        a[4] = Quaternion.Angle(Q2, Q2);
+        a[5] = Quaternion.Angle(Q2, Q3);
+        a[6] = Quaternion.Angle(Q2, Q4);
+        a[7] = Quaternion.Angle(Q3, Q3);
+        a[8] = Quaternion.Angle(Q3, Q4);
+        a[9] = Quaternion.Angle(Q4, Q4);
+
+        float maxAngle = a[0];
+
+        for (int i = 1; i < 10; i++)
         {
-            Gizmos.color = colors[i%8];
-            foreach (Vector3 v in regions[i])
-                Gizmos.DrawSphere(v, radius);
+
+            if (a[i] > maxAngle)
+                maxAngle = a[i];
         }
 
+        return maxAngle;
     }
 
     private float PathLength(NavMeshPath path)
@@ -214,9 +233,26 @@ public class SimpleAgent : Agent
         for (; ; )
         {
             camTimer = 0.0f;
-            prevRotation = transform.GetChild(0).rotation;
-            nextRotation = Quaternion.Euler(Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_X), Random.Range(-OL_GLOBAL_INFO.MAX_ROTATION_Y, OL_GLOBAL_INFO.MAX_ROTATION_Y), 0);
+            prevRotation = transform.GetChild(0).localRotation;
+            nextRotation = Quaternion.Euler(Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_X), Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_Y, OL_GLOBAL_INFO.MAX_ROTATION_Y), 0);
             yield return new WaitForSeconds(OL_GLOBAL_INFO.CAM_ROTATION_FREQUENCY);
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        float radius = 0.1f;
+        Gizmos.color = Color.red;
+        Color[] colors = { Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.green, Color.magenta, Color.black };
+        for (int i = 0; i < regions.Count; i++)
+        {
+            Gizmos.color = colors[i % 8];
+            foreach (Vector3 v in regions[i])
+                Gizmos.DrawSphere(v, radius);
+            Gizmos.color = Color.gray;
+            if(navMeshAgent.destination != Vector3.positiveInfinity && navMeshAgent.destination != Vector3.negativeInfinity)
+                Gizmos.DrawSphere(navMeshAgent.destination, radius+0.01f);
+        }
+
     }
 }

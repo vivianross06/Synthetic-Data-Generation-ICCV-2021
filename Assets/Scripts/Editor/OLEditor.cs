@@ -68,7 +68,17 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
-		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughMode"));
+
+		EditorGUILayout.LabelField("Horizontal Angle Range");
+		EditorGUI.indentLevel++;
+		ol.horizontalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.horizontalAngleRange[0]);
+		ol.horizontalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.horizontalAngleRange[1]);
+		EditorGUI.indentLevel--;
+		EditorGUILayout.LabelField("Vertical Angle Range");
+		EditorGUI.indentLevel++;
+		ol.verticalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.verticalAngleRange[0]);
+		ol.verticalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.verticalAngleRange[1]);
+		EditorGUI.indentLevel--;
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
 		
