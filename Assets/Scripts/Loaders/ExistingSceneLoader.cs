@@ -9,7 +9,7 @@ public class ExistingSceneLoader : Loader
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    public override void Load()
+    public override GameObject Load()
     {
 
         Bounds bounds = parentsOfValidGeometry[0].GetComponentsInChildren<Renderer>()[0].bounds;
@@ -38,7 +38,7 @@ public class ExistingSceneLoader : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
-
+        return new GameObject("toBeDeleted");
     }
 
 }

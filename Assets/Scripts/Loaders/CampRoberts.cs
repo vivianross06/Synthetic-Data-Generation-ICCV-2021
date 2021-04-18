@@ -7,7 +7,7 @@ using OmniLoaderUnity;
 
 public class CampRoberts : Loader
 {
-    public int LevelOfDetail;
+    public int LevelOfDetail = 16;
     string error = string.Empty;
     GameObject loadedObject;
     GameObject parentObject;
@@ -16,7 +16,30 @@ public class CampRoberts : Loader
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    public override void Load()
+    public override string GetDatasetDirectory()
+    {
+        return Config.CR_HOME;
+    }
+
+    public override void SetNextScene(string sceneID)
+    {
+        int lod_unclamped = LevelOfDetail+1;
+        try
+        {
+            lod_unclamped = System.Convert.ToInt32(sceneID);
+        }
+        catch (System.FormatException e)
+        {
+            e.ToString();
+        }
+        if (LevelOfDetail == 22)
+        {
+            Destroy(OL_GLOBAL_INFO.AGENT);
+        }
+        LevelOfDetail = Mathf.Min(Mathf.Max(lod_unclamped, 16), 22);
+    }
+
+    public override GameObject Load()
     {
         parentObject = new GameObject("CR");
         string[] dir = Directory.GetDirectories(Config.CR_HOME);
@@ -83,10 +106,10 @@ public class CampRoberts : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
-
+        return parentObject;
     }
 
-    public override void LoadNextScene()
+    /*public override void LoadNextScene()
     {
         parentObject = new GameObject("CR");
         string[] dir = Directory.GetDirectories(Config.CR_HOME);
@@ -153,6 +176,6 @@ public class CampRoberts : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
-    }
+    }*/
 
 }

@@ -11,15 +11,26 @@ public class MatterportPLY : Loader
 {
     private string currentShader;
     private GameObject parentObj;
-    public string house;
+    private string house;
     public enum ShaderEnum { RGB, SemanticShader, DepthMap };
     public ShaderEnum shaders;
 
     private GameObject navAgent;
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
+
+    public override string GetDatasetDirectory()
+    {
+        return Config.MATTERPORT_HOME;
+    }
+
+    public override void SetNextScene(string sceneID)
+    {
+        house = sceneID;
+    }
+
     // Use this for initialization
-    public override void Load()
+    public override GameObject Load()
     {
         if (shaders == ShaderEnum.RGB)
         {
@@ -81,15 +92,24 @@ public class MatterportPLY : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
 
+        fromObj.transform.SetParent(parent.transform);
+        fromObj.AddComponent<MeshRenderer>();
         fromObj.SetActive(false);
 
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
+
+        foreach (Transform child in parentObj.transform)
+        {
+            child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
+        }
+
+        return parent;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (shaders == ShaderEnum.RGB)
+        /*if (shaders == ShaderEnum.RGB)
         {
             currentShader = "Custom/VertexColors";
         }
@@ -100,11 +120,7 @@ public class MatterportPLY : Loader
         else if (shaders == ShaderEnum.DepthMap)
         {
             currentShader = "Custom/Depthmap";
-        }
-        foreach (Transform child in parentObj.transform)
-        {
-            child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
-        }
+        }*/
     }
 
     private GameObject loadObj()

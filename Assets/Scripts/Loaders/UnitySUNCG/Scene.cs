@@ -88,16 +88,24 @@ namespace UnitySUNCG
             NodeLoader roomLoader = roomObject.AddComponent<NodeLoader>();
             roomLoader.node = room;
             // create room object gameobjects
-            foreach (int i in room.nodeIndices)
+            try
             {
-                if (level.nodes[i].valid)
+                foreach (int i in room.nodeIndices)
                 {
-                    GameObject nodeObject = GetNodeObject(level.nodes[i]);
-                    nodeObject.transform.parent = roomObject.transform;
-                    // set the roomId of an object to avoid loading the mesh twice
-                    level.nodes[i].roomId = room.id;
+                    if (level.nodes[i].valid)
+                    {
+                        GameObject nodeObject = GetNodeObject(level.nodes[i]);
+                        nodeObject.transform.parent = roomObject.transform;
+                        // set the roomId of an object to avoid loading the mesh twice
+                        level.nodes[i].roomId = room.id;
+                    }
                 }
             }
+            catch (Exception e)
+			{
+                e.ToString();
+                Debug.Log("Tried to load invalid room!");
+			}
             return roomObject;
         }
 

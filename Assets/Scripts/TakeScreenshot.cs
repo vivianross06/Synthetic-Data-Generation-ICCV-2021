@@ -15,32 +15,33 @@ public class TakeScreenshot : Screenshoter
     {
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
-        path = Application.dataPath + "/../Images/";
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path); //creates directory
-        }
-        string date = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-        path = path + "/" + date + "/";
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path + "/" + System.DateTime.Now);
-            Directory.CreateDirectory(path + "Parameters/");
-        }
+        path = Application.dataPath + "/../ol_output/";
+        Directory.CreateDirectory(path); //creates directory
     }
+
+    public override void ResetCounter()
+    {
+        counter = 0;
+    }
+
     public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;
-        //path = Application.dataPath + "/../Images/";
-        if (!File.Exists(path + "Parameters/intrinsics.txt"))
+        path = Application.dataPath + "/../ol_output/";
+        if (!File.Exists(path + "intrinsics.txt"))
         {
             Matrix4x4 intrinsics = cam.projectionMatrix;
-            var textWrite = File.CreateText(path + "Parameters/intrinsics.txt");
-            textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2] + " " + intrinsics[0,3]);
-            textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2] + " " + intrinsics[1,3]);
-            textWrite.WriteLine(intrinsics[2, 0] + " " + intrinsics[2, 1] + " " + intrinsics[2, 2] + " " + intrinsics[2,3]);
+            var textWrite = File.CreateText(path + "intrinsics.txt");
+            textWrite.WriteLine(intrinsics[0, 0] + " " + intrinsics[0, 1] + " " + intrinsics[0, 2] + " " + intrinsics[0, 3]);
+            textWrite.WriteLine(intrinsics[1, 0] + " " + intrinsics[1, 1] + " " + intrinsics[1, 2] + " " + intrinsics[1, 3]);
+            textWrite.WriteLine(intrinsics[2, 0] + " " + intrinsics[2, 1] + " " + intrinsics[2, 2] + " " + intrinsics[2, 3]);
             textWrite.WriteLine(intrinsics[3, 0] + " " + intrinsics[3, 1] + " " + intrinsics[3, 2] + " " + intrinsics[3, 3]);
             textWrite.Close();
+        }
+        path += OL_GLOBAL_INFO.SCENE_NAME + "/";
+        if (!Directory.Exists(path + "Parameters/"))
+        {
+            Directory.CreateDirectory(path + "Parameters/");
         }
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         screenshotList = OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES;
@@ -61,15 +62,15 @@ public class TakeScreenshot : Screenshoter
         //cam.backgroundColor = Color.clear;
         //cam.Render();
         countString = counter.ToString().PadLeft(4, '0');
-        for (int i=0; i< screenshotList.Count; i++)
+        for (int i = 0; i < screenshotList.Count; i++)
         {
-            if(screenshotList[i].formatType == FormatEnum.DepthMap)
-			{
+            if (screenshotList[i].formatType == FormatEnum.DepthMap)
+            {
                 //Read in fixed4 values from fragment shader
                 render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGBFloat);
             }
             else
-			{
+            {
                 render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
             }
             RenderTexture.active = render_texture;
@@ -79,10 +80,10 @@ public class TakeScreenshot : Screenshoter
             else
                 cam.Render();
             string dir = screenshotList[i].directoryName;
-            if((dir[dir.Length-1] != '/') && dir.Length != 0)
-			{
+            if ((dir[dir.Length - 1] != '/') && dir.Length != 0)
+            {
                 dir = dir + "/";
-			}
+            }
             string dir2 = path + dir;
             if (!Directory.Exists(dir))
             {
@@ -97,14 +98,14 @@ public class TakeScreenshot : Screenshoter
                 Shot = ImageConversion.EncodeToPNG(tex_RGB);
                 extention = ".png";
             }
-            else if(screenshotList[i].formatType == FormatEnum.DepthMap)
+            else if (screenshotList[i].formatType == FormatEnum.DepthMap)
             {
                 var tex_temp = new Texture2D(width, height, TextureFormat.RGBAFloat, false, true);
                 tex_temp.ReadPixels(grab_area, 0, 0);
                 var data = tex_temp.GetRawTextureData<Color>();
                 byte[] depth_data = new byte[2 * width * height];
-                for(int j=0; j<(width * height); j++)
-				{
+                for (int j = 0; j < (width * height); j++)
+                {
                     float dist = Mathf.Min(65535.0f, data[j][3] - 1.0f);
                     ushort depth = (ushort)(Mathf.RoundToInt(dist));
                     depth_data[j * 2] = (byte)(depth);
@@ -119,7 +120,7 @@ public class TakeScreenshot : Screenshoter
             File.WriteAllBytes(savePath, Shot);
         }
         //Matrix4x4 extrinsics = cam.worldToCameraMatrix;
-        Matrix4x4 extrinsics = Matrix4x4.TRS(cam.transform.position, cam.transform.rotation, new Vector3(1,1,1));
+        Matrix4x4 extrinsics = Matrix4x4.TRS(cam.transform.position, cam.transform.rotation, new Vector3(1, 1, 1));
         var extrinsicsWrite = File.CreateText(path + "Parameters/extrinsics" + countString + ".txt");
         extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[0, 1] + " " + extrinsics[0, 2] + " " + extrinsics[0, 3]);
         extrinsicsWrite.WriteLine(extrinsics[1, 0] + " " + extrinsics[1, 1] + " " + extrinsics[1, 2] + " " + extrinsics[1, 3]);
@@ -140,32 +141,11 @@ public class TakeScreenshot : Screenshoter
         Texture2D.DestroyImmediate(tex_RGB);
         Texture2D.DestroyImmediate(tex_DEPTH);
         counter++;
-    } 
-
-    void Update()
-    {
-        /*if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            Debug.Log("screenshot taken");
-            CaptureScreenshot(Camera.main, Screen.width, Screen.height);
-        }*/
-    }
-
-    /*
-    void Start()
-    {
-        counter = 0;
-        filename = "Capture";
-        path = Application.dataPath + "/../RGB/";
-        Directory.CreateDirectory(path); //creates directory
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            ScreenCapture.CaptureScreenshot(path + filename + counter++ + ".png");
-        }
+
     }
-    */
+
 }

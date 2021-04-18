@@ -11,7 +11,7 @@ public class MatterportRoomPLY : Loader
     public enum ShaderEnum { RGB, SemanticShader, DepthMap };
     public ShaderEnum shaders;
     private string currentShader;
-    public string house;
+    private string house;
     public List<bool> roomNumber = new List<bool>();
     private bool defaultValue = true; //Do we show a room if it is not specified whether we want to show it or not?
     private List<GameObject> roomObjects = new List<GameObject>();
@@ -19,8 +19,18 @@ public class MatterportRoomPLY : Loader
     private GameObject navAgent;
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
-    // Start is called before the first frame update
-    public override void Load()
+
+    public override string GetDatasetDirectory()
+    {
+        return Config.MATTERPORT_HOME;
+    }
+
+    public override void SetNextScene(string sceneID)
+    {
+        house = sceneID;
+    }
+
+    public override GameObject Load()
     {
         if (shaders == ShaderEnum.RGB)
         {
@@ -93,16 +103,32 @@ public class MatterportRoomPLY : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
 
+        fromObj.transform.SetParent(parent.transform);
+        fromObj.AddComponent<MeshRenderer>();
         fromObj.SetActive(false);
-
+        
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
+
+        foreach (GameObject rm in roomObjects)
+        {
+            foreach (Transform child in rm.transform)
+            {
+                child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
+            }
+        }
+        for (int i = 0; i < roomNumber.Count; i++)
+        {
+            roomObjects[i].SetActive(roomNumber[i]);
+        }
+
+        return parent;
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        if (shaders == ShaderEnum.RGB)
+        /*if (shaders == ShaderEnum.RGB)
         {
             currentShader = "Custom/VertexColors";
         }
@@ -113,18 +139,7 @@ public class MatterportRoomPLY : Loader
         else if (shaders == ShaderEnum.DepthMap)
         {
             currentShader = "Custom/Depthmap";
-        }
-        foreach (GameObject room in roomObjects)
-        {
-            foreach (Transform child in room.transform)
-            {
-                child.gameObject.GetComponent<Renderer>().material.shader = Shader.Find(currentShader);
-            }
-        }
-        for (int i = 0; i < roomNumber.Count; i++)
-        {
-            roomObjects[i].SetActive(roomNumber[i]);
-        }
+        }*/
     }
 
     private GameObject loadObj()
@@ -142,4 +157,5 @@ public class MatterportRoomPLY : Loader
         OL_GLOBAL_INFO.setLayerOfAll(loadedObject, 8);
         return rotFix;
     }
+
 }

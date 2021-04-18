@@ -12,6 +12,8 @@ public class OLEditor : Editor
 
     int ListSize;
 	bool showList = true;
+	bool showRangeH = true;
+	bool showRangeV = true;
 
     public override void OnInspectorGUI()
 	{
@@ -42,7 +44,19 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(loaderType));
 			}
 		}
-		EditorGUILayout.PropertyField(GetTarget.FindProperty("loadAll"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("loadMode"));
+		switch (ol.loadMode)
+		{
+			case LoadModeEnum.CompleteDirectory:
+				ol.loadOption = "";
+				break;
+			case LoadModeEnum.PartialDirectory:
+				ol.loadOption = EditorGUILayout.TextField("Path To Scene List File", ol.loadOption);
+				break;
+			case LoadModeEnum.SingleScene:
+				ol.loadOption = EditorGUILayout.TextField("Scene ID", ol.loadOption);
+				break;
+		}
 
 		if (ol.AgentScript == null)
 			agentType = null;
@@ -68,16 +82,22 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
-		EditorGUILayout.LabelField("Horizontal Angle Range");
-		EditorGUI.indentLevel++;
-		ol.horizontalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.horizontalAngleRange[0]);
-		ol.horizontalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.horizontalAngleRange[1]);
-		EditorGUI.indentLevel--;
-		EditorGUILayout.LabelField("Vertical Angle Range");
-		EditorGUI.indentLevel++;
-		ol.verticalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.verticalAngleRange[0]);
-		ol.verticalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.verticalAngleRange[1]);
-		EditorGUI.indentLevel--;
+		showRangeH = EditorGUILayout.Foldout(showRangeH, "Horizontal Angle Range");
+		if (showRangeH)
+		{
+			EditorGUI.indentLevel++;
+			ol.horizontalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.horizontalAngleRange[0]);
+			ol.horizontalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.horizontalAngleRange[1]);
+			EditorGUI.indentLevel--;
+		}
+		showRangeV = EditorGUILayout.Foldout(showRangeV, "Vertical Angle Range");
+		if (showRangeV)
+		{
+			EditorGUI.indentLevel++;
+			ol.verticalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.verticalAngleRange[0]);
+			ol.verticalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.verticalAngleRange[1]);
+			EditorGUI.indentLevel--;
+		}
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
 		

@@ -104,6 +104,7 @@ namespace UnitySUNCG
         private static UnityEngine.Material LoadMaterial(Material material)
         {
             UnityEngine.Material mat = new UnityEngine.Material(Shader.Find("Standard")) { name = material.name };
+            //UnityEngine.Material mat = new UnityEngine.Material(Shader.Find("Unlit/NewUnlitShader")) { name = material.name };
             if (material.diffuse != null)
             {
                 Color c;

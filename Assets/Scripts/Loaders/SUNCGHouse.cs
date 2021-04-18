@@ -8,32 +8,40 @@ using UnitySUNCG;
 
 public class SUNCGHouse : Loader
 {
-    public List<string> ids = new List<string>();
-    private int index = 0;
+    //public List<string> ids = new List<string>();
+    //private int index = 0;
+    //private bool isLoaded = false;
     public House house;
     private GameObject houseObject;
     private GameObject navAgent;
-    public string houseId = "00a13f6179b2ed9a1bc10eef9d5b3bf4";
+    private string houseId = "00a13f6179b2ed9a1bc10eef9d5b3bf4";
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
-    private bool isLoaded = false;
 
-    public void generateIDs()
+    public override string GetDatasetDirectory()
+    {
+        return Config.SUNCG_HOME + "house/";
+    }
+
+    /*public void generateIDs()
     {
         string[] dir = Directory.GetDirectories(Config.SUNCG_HOME + "house/");
-        for (int i=0; i<dir.Length; i++)
+        for (int i = 0; i < dir.Length; i++)
         {
             string[] folders = dir[i].Split('/');
             ids.Add(folders[folders.Length - 1]);
         }
+    }*/
+
+    public override void SetNextScene(string sceneID)
+    {
+        houseId = sceneID;
     }
 
-    public override void Load()
+    public override GameObject Load()
     {
-        //string houseId = "000d939dc2257995adcb27483b04ad04";
         house = Scene.GetHouseById(houseId);
         houseObject = Scene.GetHouseObject(house);
-        //houseObject.GetComponent<HouseLoader>().Load(true);
         houseObject.GetComponent<HouseLoader>().Load();
 
         navMeshSurface = houseObject.AddComponent<NavMeshSurface>();
@@ -67,10 +75,11 @@ public class SUNCGHouse : Loader
         navAgent = OL_GLOBAL_INFO.AGENT;
         navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
         OL_GLOBAL_INFO.BBOX_LIST = bboxlist;
-        isLoaded = true;
+        //isLoaded = true;
+        return houseObject;
     }
 
-    public override void LoadNextScene()
+    /*public override void LoadNextScene()
     {
         generateIDs();
         if (isLoaded == true)
@@ -117,6 +126,5 @@ public class SUNCGHouse : Loader
         navAgent.GetComponent<NavMeshAgent>().agentTypeID = agentSettings.agentTypeID;
         OL_GLOBAL_INFO.BBOX_LIST = bboxlist;
         isLoaded = true;
-    }
-
+    }*/
 }

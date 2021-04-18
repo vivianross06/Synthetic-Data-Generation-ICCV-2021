@@ -16,19 +16,24 @@ public class SimpleAgent : Agent
     public float elapsedTime;
     private float camTimer;
     private float maxAngle;
-    public bool done = false;
-
+    public int REPORT = 0;
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(done);
+        REPORT = regions.Count;
         elapsedTime += Time.deltaTime;
         camTimer += Time.deltaTime;
         if(elapsedTime > OL_GLOBAL_INFO.MAX_TIME_BETWEEN_POINTS)
 		{
             elapsedTime = 0.0f;
-            navMeshAgent.Warp(navMeshAgent.destination);
+            if(navMeshAgent.destination != Vector3.positiveInfinity)
+                navMeshAgent.Warp(navMeshAgent.destination);
+            else
+			{
+                screenshot.ResetCounter();
+                agentDone = true;
+			}
 		}
         if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
             elapsedTime = 0.0f;
@@ -46,7 +51,11 @@ public class SimpleAgent : Agent
         }
 
         float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (maxAngle));
-        transform.GetChild(0).localRotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        Quaternion q = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        if (isNaN(q))
+            transform.GetChild(0).localRotation = nextRotation;
+        else
+            transform.GetChild(0).localRotation = q;
         Vector3 eulerRotation = transform.GetChild(0).localEulerAngles;
         transform.GetChild(0).localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
 
@@ -58,7 +67,7 @@ public class SimpleAgent : Agent
     }
 
     public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
-        done = false;
+        agentDone = false;
         scStep = OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS;
         int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
         screenshot = GetComponent<Screenshoter>();
@@ -66,6 +75,7 @@ public class SimpleAgent : Agent
         //make regions
         NavMeshPath path = new NavMeshPath();
         List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
+        regions.Clear();
         while (d.Count > 0)
 		{
             Vector3 src = d[0];
@@ -103,7 +113,8 @@ public class SimpleAgent : Agent
         }
         else
         {
-            done = true;
+            screenshot.ResetCounter();
+            agentDone = true;
             navMeshAgent.enabled = false;
         }
     }
@@ -209,6 +220,11 @@ public class SimpleAgent : Agent
         }
 
         return maxAngle;
+    }
+
+    private bool isNaN(Quaternion myQuaternion)
+	{
+        return (System.Single.IsNaN(myQuaternion.x) || System.Single.IsNaN(myQuaternion.y) || System.Single.IsNaN(myQuaternion.z) || System.Single.IsNaN(myQuaternion.w));
     }
 
     private float PathLength(NavMeshPath path)

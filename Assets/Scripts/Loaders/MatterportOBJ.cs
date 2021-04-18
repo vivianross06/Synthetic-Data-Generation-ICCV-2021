@@ -7,7 +7,7 @@ using OmniLoaderUnity;
 
 public class MatterportOBJ : Loader
 {
-    public string house= "17DRP5sb8fy"; //17DRP5sb8fy
+    private string house= "17DRP5sb8fy"; //17DRP5sb8fy
     string error = string.Empty;
     GameObject loadedObject;
 
@@ -15,7 +15,17 @@ public class MatterportOBJ : Loader
     private NavMeshSurface navMeshSurface;
     private NavMeshBuildSettings agentSettings;
 
-    public override void Load()
+    public override string GetDatasetDirectory()
+    {
+        return Config.MATTERPORT_HOME;
+    }
+
+    public override void SetNextScene(string sceneID)
+    {
+        house = sceneID;
+    }
+
+    public override GameObject Load()
     {
         string[] dir = Directory.GetDirectories(Config.MATTERPORT_HOME + house + "/matterport_mesh/");
         //string[] dir = Directory.GetDirectories(Application.dataPath + "/../../matterport/" + house + "/matterport_mesh/");
@@ -65,6 +75,8 @@ public class MatterportOBJ : Loader
         bb.Item2 = bounds.max;
         bbl.Add(bb);
         OL_GLOBAL_INFO.BBOX_LIST = bbl;
+
+        return rotFix;
     }
 
     /*

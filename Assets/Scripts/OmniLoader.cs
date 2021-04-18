@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.AI;
 using UnityEditor;
 
 public enum FormatEnum { RGB, DepthMap };
+public enum LoadModeEnum { CompleteDirectory, PartialDirectory, SingleScene };
 
 [System.Serializable]
 public struct ScreenShotType
@@ -19,13 +21,20 @@ public class OmniLoader : MonoBehaviour
 {
     [HideInInspector] public MonoScript AgentScript;
     [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
-    [HideInInspector] public Boolean loadAll; //determines whether to load every scene in directory or not
+    //[HideInInspector] public Boolean loadAll; //determines whether to load every scene in directory or not
+    [HideInInspector] public LoadModeEnum loadMode = LoadModeEnum.CompleteDirectory;
+    [HideInInspector] public string loadOption = "";
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public uint agentWaypoints = 40;
     [HideInInspector] public float stepDistance = 1.0f;
     [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
     [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0, 0);
+    private List<string> sceneIDs;
+    private GameObject currentScene;
+    private Loader sceneLoader;
+    private Agent sceneAgent;
+    private NavMeshAgent nma;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +54,7 @@ public class OmniLoader : MonoBehaviour
             agentObj.AddComponent(AgentScript.GetClass());
         if (ScreenshotScript != null)
             agentObj.AddComponent(ScreenshotScript.GetClass());
-        NavMeshAgent nma = agentObj.AddComponent<NavMeshAgent>();
+        nma = agentObj.AddComponent<NavMeshAgent>();
         nma.enabled = false;
         //modify desired values of NavMeshAgent component here.
         //example: nma.speed = 3.5f;
@@ -58,49 +67,93 @@ public class OmniLoader : MonoBehaviour
             camera.transform.localPosition = new Vector3(0, 1.5f, 0);
             camera.transform.localRotation = Quaternion.identity;
         }
+
+        sceneIDs = generateIDs();
+
         if (LoaderScript != null)
         {
-            if (loadAll == false)
-            {
-                ((Loader)GetComponent(LoaderScript.GetClass())).Load();
-            }
-            else
-            {
-                ((Loader)GetComponent(LoaderScript.GetClass())).LoadNextScene();
-            }
+            sceneLoader = (Loader)GetComponent(LoaderScript.GetClass());
+            OL_GLOBAL_INFO.SCENE_NAME = sceneIDs[0];
+            sceneLoader.SetNextScene(sceneIDs[0]);
+            sceneIDs.RemoveAt(0);
+            currentScene = sceneLoader.Load();
         }
         if (AgentScript != null)
-            ((Agent)agentObj.GetComponent(AgentScript.GetClass())).StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
-
+        {
+            sceneAgent = (Agent)agentObj.GetComponent(AgentScript.GetClass());
+            sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (loadAll == true)
+        if (loadMode != LoadModeEnum.SingleScene && sceneIDs.Count > 0)
         {
-            bool isDone = OL_GLOBAL_INFO.AGENT.GetComponent<SimpleAgent>().done;
-            if (isDone == true)
+            bool isDone = false;
+            if (AgentScript != null)
             {
-                ((Loader)GetComponent(LoaderScript.GetClass())).LoadNextScene();
-                OL_GLOBAL_INFO.AGENT.GetComponent<SimpleAgent>().StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
+                isDone = sceneAgent.agentDone;
+            }
+
+            if (isDone)
+            {
+                OL_GLOBAL_INFO.SCENE_NAME = sceneIDs[0];
+                sceneLoader.SetNextScene(sceneIDs[0]);
+                sceneIDs.RemoveAt(0);
+                Destroy(currentScene);
+                currentScene = sceneLoader.Load();
+                sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 
         }
     }
-}
 
+    private List<string> generateIDs()
+    {
+        List<string> ids = new List<string>();
+        switch (loadMode)
+        {
+            case LoadModeEnum.CompleteDirectory:
+                string[] dir = Directory.GetDirectories(((Loader)GetComponent(LoaderScript.GetClass())).GetDatasetDirectory());
+                for (int i = 0; i < dir.Length; i++)
+                {
+                    string[] folders = dir[i].Split('/');
+                    ids.Add(folders[folders.Length - 1]);
+                }
+                ids.Sort();
+                break;
+            case LoadModeEnum.PartialDirectory:
+                ids = new List<string>(File.ReadAllLines(loadOption));
+                break;
+            case LoadModeEnum.SingleScene:
+                ids.Add(loadOption);
+                break;
+        }
+        return ids;
+    }
+}
 
 public class Loader : MonoBehaviour
 {
-    public virtual void Load()
+    public virtual GameObject Load()
+    { return new GameObject("default"); }
+
+    public virtual void SetNextScene(string sceneID)
     { }
-    public virtual void LoadNextScene()
-    { }
+
+    public virtual string GetDatasetDirectory()
+    { return ""; }
+
+    //public virtual void LoadNextScene()
+    //{ }
 }
 
 public class Agent : MonoBehaviour
 {
+    public bool agentDone;
+
     public virtual void StartAgent(List<(Vector3, Vector3)> bboxlist)
     { }
 }
@@ -109,13 +162,16 @@ public class Screenshoter : MonoBehaviour
 {
     public virtual void CaptureScreenshot(Camera cam, int width, int height)
     { }
+
+    public virtual void ResetCounter()
+    { }
 }
 
 public static class OL_GLOBAL_INFO
 {
     public static GameObject AGENT;
     public static List<ScreenShotType> SCREENSHOT_PROPERTIES;
-    public static string SCREENSHOT_FILENAME = "Capture";
+    public static string SCREENSHOT_FILENAME = "";
     public static int TOTAL_POINTS = 40;
     public static float DISTANCE_BETWEEN_SCREENSHOTS = 0.1f;
     public static float MAX_TIME_BETWEEN_POINTS = 60.0f;
@@ -126,6 +182,7 @@ public static class OL_GLOBAL_INFO
     public static float CAM_ROTATION_DURATION = 0.5f;
     public static float CAM_ROTATION_FREQUENCY = 0.5f;
     public static List<(Vector3, Vector3)> BBOX_LIST;
+    public static string SCENE_NAME;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;
