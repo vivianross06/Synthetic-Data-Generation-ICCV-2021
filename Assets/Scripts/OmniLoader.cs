@@ -21,7 +21,6 @@ public class OmniLoader : MonoBehaviour
 {
     [HideInInspector] public MonoScript AgentScript;
     [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
-    //[HideInInspector] public Boolean loadAll; //determines whether to load every scene in directory or not
     [HideInInspector] public LoadModeEnum loadMode = LoadModeEnum.CompleteDirectory;
     [HideInInspector] public string loadOption = "";
     [HideInInspector] public MonoScript ScreenshotScript;
@@ -146,8 +145,9 @@ public class Loader : MonoBehaviour
     public virtual string GetDatasetDirectory()
     { return ""; }
 
-    //public virtual void LoadNextScene()
-    //{ }
+    public virtual void GenerateIDs()
+    { }
+
 }
 
 public class Agent : MonoBehaviour
@@ -170,6 +170,8 @@ public class Screenshoter : MonoBehaviour
 public static class OL_GLOBAL_INFO
 {
     public static GameObject AGENT;
+    public static string DATASET;
+    public static string SCENE_ID;
     public static List<ScreenShotType> SCREENSHOT_PROPERTIES;
     public static string SCREENSHOT_FILENAME = "";
     public static int TOTAL_POINTS = 40;

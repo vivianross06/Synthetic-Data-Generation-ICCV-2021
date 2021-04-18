@@ -87,9 +87,8 @@ public class TakeScreenshot : Screenshoter
                 dir = dir + "/";
             }
             string dir2 = specificPath + dir;
-            if (!Directory.Exists(dir))
+            if (!Directory.Exists(dir2))
             {
-                Debug.Log("doesn't exist");
                 Directory.CreateDirectory(dir2); //creates directory
             }
             string extention = "";
