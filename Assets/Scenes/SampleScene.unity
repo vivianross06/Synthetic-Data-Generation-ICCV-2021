@@ -246,12 +246,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
   LoaderScript: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
-  loadAll: 1
+  loadAll: 0
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
-  scs: []
-  agentWaypoints: 5
-  stepDistance: 1
-  flythroughMode: 1
+  scs:
+  - shader: {fileID: 4800000, guid: 21f2bd9c2f85a264c86857ccde11b256, type: 3}
+    directoryName: RGB
+    formatType: 0
+  - shader: {fileID: 4800000, guid: 59a3c9c901fac4b339dbbd6dd0343135, type: 3}
+    directoryName: Depth
+    formatType: 1
+  agentWaypoints: 100
+  stepDistance: 0.1
+  horizontalAngleRange: {x: 0, y: 0}
+  verticalAngleRange: {x: 0, y: 0}
 --- !u!4 &743955941
 Transform:
   m_ObjectHideFlags: 0

@@ -24,7 +24,7 @@ public class TakeScreenshot : Screenshoter
         path = path + "/" + date + "/";
         if (!Directory.Exists(path))
         {
-            Directory.CreateDirectory(path + "/" + System.DateTime.Now);
+            Directory.CreateDirectory(path);
             Directory.CreateDirectory(path + "Parameters/");
         }
     }
@@ -84,8 +84,10 @@ public class TakeScreenshot : Screenshoter
                 dir = dir + "/";
 			}
             string dir2 = path + dir;
-            if (!Directory.Exists(dir))
+            Debug.Log(dir2);
+            if (!Directory.Exists(dir2))
             {
+                Debug.Log("doesn't exist");
                 Directory.CreateDirectory(dir2); //creates directory
             }
             string extention = "";
