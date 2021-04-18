@@ -46,7 +46,12 @@ public class SimpleAgent : Agent
         }
 
         float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (maxAngle));
-        transform.GetChild(0).localRotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        //transform.GetChild(0).localRotation = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        Quaternion q = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        if (isNaN(q))
+            transform.GetChild(0).localRotation = nextRotation;
+        else
+            transform.GetChild(0).localRotation = q;
         Vector3 eulerRotation = transform.GetChild(0).localEulerAngles;
         transform.GetChild(0).localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
 
@@ -64,6 +69,7 @@ public class SimpleAgent : Agent
         screenshot = GetComponent<Screenshoter>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         //make regions
+        screenshot.ScreenshotSetup();
         NavMeshPath path = new NavMeshPath();
         List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
         while (d.Count > 0)
@@ -256,4 +262,11 @@ public class SimpleAgent : Agent
         }
 
     }
+
+    private bool isNaN(Quaternion myQuaternion)
+    {
+        return (System.Single.IsNaN(myQuaternion.x) || System.Single.IsNaN(myQuaternion.y) || System.Single.IsNaN(myQuaternion.z) || System.Single.IsNaN(myQuaternion.w));
+    }
+
+
 }

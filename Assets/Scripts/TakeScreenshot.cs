@@ -13,6 +13,11 @@ public class TakeScreenshot : Screenshoter
 
     private void Start()
     {
+
+    }
+
+    public override void ScreenshotSetup()
+    {
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         path = Application.dataPath + "/../Images/";
@@ -26,8 +31,13 @@ public class TakeScreenshot : Screenshoter
         {
             Directory.CreateDirectory(path);
             Directory.CreateDirectory(path + "Parameters/");
+            var textWrite = File.CreateText(path + "identity.txt");
+            textWrite.WriteLine("Dataset: " + OL_GLOBAL_INFO.DATASET);
+            textWrite.WriteLine("ID: " + OL_GLOBAL_INFO.SCENE_ID);
+            textWrite.Close();
         }
     }
+
     public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;
@@ -84,10 +94,8 @@ public class TakeScreenshot : Screenshoter
                 dir = dir + "/";
 			}
             string dir2 = path + dir;
-            Debug.Log(dir2);
             if (!Directory.Exists(dir2))
             {
-                Debug.Log("doesn't exist");
                 Directory.CreateDirectory(dir2); //creates directory
             }
             string extention = "";

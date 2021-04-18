@@ -18,7 +18,7 @@ public class SUNCGHouse : Loader
     private NavMeshBuildSettings agentSettings;
     private bool isLoaded = false;
 
-    public void generateIDs()
+    public override void GenerateIDs()
     {
         string[] dir = Directory.GetDirectories(Config.SUNCG_HOME + "house/");
         for (int i=0; i<dir.Length; i++)
@@ -30,6 +30,8 @@ public class SUNCGHouse : Loader
 
     public override void Load()
     {
+        OL_GLOBAL_INFO.DATASET = "SUNCG";
+        OL_GLOBAL_INFO.SCENE_ID = houseId;
         //string houseId = "000d939dc2257995adcb27483b04ad04";
         house = Scene.GetHouseById(houseId);
         houseObject = Scene.GetHouseObject(house);
@@ -72,7 +74,9 @@ public class SUNCGHouse : Loader
 
     public override void LoadNextScene()
     {
-        generateIDs();
+        Debug.Log(ids[index]);
+        OL_GLOBAL_INFO.DATASET = "SUNCG";
+        OL_GLOBAL_INFO.SCENE_ID = ids[index];
         if (isLoaded == true)
         {
             Destroy(houseObject);

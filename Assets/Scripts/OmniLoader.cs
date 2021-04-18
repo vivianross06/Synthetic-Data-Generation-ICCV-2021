@@ -60,6 +60,7 @@ public class OmniLoader : MonoBehaviour
         }
         if (LoaderScript != null)
         {
+            ((Loader)GetComponent(LoaderScript.GetClass())).GenerateIDs();
             if (loadAll == false)
             {
                 ((Loader)GetComponent(LoaderScript.GetClass())).Load();
@@ -97,6 +98,8 @@ public class Loader : MonoBehaviour
     { }
     public virtual void LoadNextScene()
     { }
+    public virtual void GenerateIDs()
+    { }
 }
 
 public class Agent : MonoBehaviour
@@ -109,11 +112,15 @@ public class Screenshoter : MonoBehaviour
 {
     public virtual void CaptureScreenshot(Camera cam, int width, int height)
     { }
+    public virtual void ScreenshotSetup()
+    { }
 }
 
 public static class OL_GLOBAL_INFO
 {
     public static GameObject AGENT;
+    public static string DATASET;
+    public static string SCENE_ID;
     public static List<ScreenShotType> SCREENSHOT_PROPERTIES;
     public static string SCREENSHOT_FILENAME = "Capture";
     public static int TOTAL_POINTS = 40;
