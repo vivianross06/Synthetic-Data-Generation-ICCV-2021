@@ -13,10 +13,13 @@ public class TakeScreenshot : Screenshoter
 
     private void Start()
     {
+        string date = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         path = Application.dataPath + "/../ol_output/";
         Directory.CreateDirectory(path); //creates directory
+        path = path + date + "/";
+        Directory.CreateDirectory(path);
     }
 
     public override void ResetCounter()
@@ -27,7 +30,6 @@ public class TakeScreenshot : Screenshoter
     public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;
-        path = Application.dataPath + "/../ol_output/";
         if (!File.Exists(path + "intrinsics.txt"))
         {
             Matrix4x4 intrinsics = cam.projectionMatrix;
@@ -38,10 +40,10 @@ public class TakeScreenshot : Screenshoter
             textWrite.WriteLine(intrinsics[3, 0] + " " + intrinsics[3, 1] + " " + intrinsics[3, 2] + " " + intrinsics[3, 3]);
             textWrite.Close();
         }
-        path += OL_GLOBAL_INFO.SCENE_NAME + "/";
-        if (!Directory.Exists(path + "Parameters/"))
+        string specificPath = path + OL_GLOBAL_INFO.SCENE_NAME + "/";
+        if (!Directory.Exists(specificPath + "Parameters/"))
         {
-            Directory.CreateDirectory(path + "Parameters/");
+            Directory.CreateDirectory(specificPath + "Parameters/");
         }
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         screenshotList = OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES;
@@ -84,7 +86,7 @@ public class TakeScreenshot : Screenshoter
             {
                 dir = dir + "/";
             }
-            string dir2 = path + dir;
+            string dir2 = specificPath + dir;
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir2); //creates directory
@@ -116,12 +118,12 @@ public class TakeScreenshot : Screenshoter
                 Shot = ImageConversion.EncodeToPNG(tex_DEPTH);
                 extention = ".png";
             }
-            string savePath = path + dir + filename + countString + extention;
+            string savePath = specificPath + dir + filename + countString + extention;
             File.WriteAllBytes(savePath, Shot);
         }
         //Matrix4x4 extrinsics = cam.worldToCameraMatrix;
         Matrix4x4 extrinsics = Matrix4x4.TRS(cam.transform.position, cam.transform.rotation, new Vector3(1, 1, 1));
-        var extrinsicsWrite = File.CreateText(path + "Parameters/extrinsics" + countString + ".txt");
+        var extrinsicsWrite = File.CreateText(specificPath + "Parameters/extrinsics" + countString + ".txt");
         extrinsicsWrite.WriteLine(extrinsics[0, 0] + " " + extrinsics[0, 1] + " " + extrinsics[0, 2] + " " + extrinsics[0, 3]);
         extrinsicsWrite.WriteLine(extrinsics[1, 0] + " " + extrinsics[1, 1] + " " + extrinsics[1, 2] + " " + extrinsics[1, 3]);
         extrinsicsWrite.WriteLine(extrinsics[2, 0] + " " + extrinsics[2, 1] + " " + extrinsics[2, 2] + " " + extrinsics[2, 3]);
