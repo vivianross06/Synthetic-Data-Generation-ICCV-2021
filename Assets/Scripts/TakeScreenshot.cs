@@ -27,6 +27,8 @@ public class TakeScreenshot : Screenshoter
         counter = 0;
     }
 
+
+
     public override void CaptureScreenshot(Camera cam, int width, int height)
     {
         string countString;

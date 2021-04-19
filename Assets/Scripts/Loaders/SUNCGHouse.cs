@@ -27,7 +27,6 @@ public class SUNCGHouse : Loader
 
     public override GameObject Load()
     {
-        //string houseId = "000d939dc2257995adcb27483b04ad04";
         house = Scene.GetHouseById(houseId);
         houseObject = Scene.GetHouseObject(house);
         houseObject.GetComponent<HouseLoader>().Load();

@@ -147,7 +147,6 @@ public class Loader : MonoBehaviour
 
     public virtual void GenerateIDs()
     { }
-
 }
 
 public class Agent : MonoBehaviour
@@ -162,7 +161,6 @@ public class Screenshoter : MonoBehaviour
 {
     public virtual void CaptureScreenshot(Camera cam, int width, int height)
     { }
-
     public virtual void ResetCounter()
     { }
 }

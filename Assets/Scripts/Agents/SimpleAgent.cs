@@ -73,7 +73,6 @@ public class SimpleAgent : Agent
         screenshot = GetComponent<Screenshoter>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         //make regions
-        screenshot.ScreenshotSetup();
         NavMeshPath path = new NavMeshPath();
         List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
         regions.Clear();
@@ -273,6 +272,5 @@ public class SimpleAgent : Agent
         }
 
     }
-
 
 }
