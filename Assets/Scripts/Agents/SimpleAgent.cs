@@ -19,7 +19,7 @@ public class SimpleAgent : Agent
     public int REPORT = 0;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         REPORT = regions.Count;
         elapsedTime += Time.deltaTime;
@@ -155,6 +155,10 @@ public class SimpleAgent : Agent
 
     private List<Vector3> createRandomPoints(List<(Vector3, Vector3)> bboxlist, int totalPoints)
     {
+        if (OL_GLOBAL_INFO.SEED == true)
+        {
+            Random.InitState(5);
+        }
         List<Vector3> randomPoints = new List<Vector3>();
         int pointsPerLevel = totalPoints / bboxlist.Count;
         for (int l = 0; l < bboxlist.Count; l++)

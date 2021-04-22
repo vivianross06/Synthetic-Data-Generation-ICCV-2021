@@ -29,6 +29,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public float stepDistance = 1.0f;
     [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
     [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0, 0);
+    [HideInInspector] public bool seedFlythroughs = false;
     private List<string> sceneIDs;
     private GameObject currentScene;
     private Loader sceneLoader;
@@ -48,6 +49,7 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.MAX_ROTATION_Y = horizontalAngleRange[1];
         OL_GLOBAL_INFO.MIN_ROTATION_X = verticalAngleRange[0];
         OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];
+        OL_GLOBAL_INFO.SEED = seedFlythroughs;
 
         if (AgentScript != null)
             agentObj.AddComponent(AgentScript.GetClass());
@@ -183,6 +185,7 @@ public static class OL_GLOBAL_INFO
     public static float CAM_ROTATION_FREQUENCY = 0.5f;
     public static List<(Vector3, Vector3)> BBOX_LIST;
     public static string SCENE_NAME;
+    public static bool SEED;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;
