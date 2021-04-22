@@ -83,7 +83,7 @@ public class SimpleAgent : Agent
             for (int i=0; i<d.Count; i++)
 			{
                 NavMesh.CalculatePath(src, d[i], NavMesh.AllAreas, path);
-				if (path.status == NavMeshPathStatus.PathComplete || i==0)
+				if (path.status == NavMeshPathStatus.PathComplete || region.Count == 0)
                 {
                     //Then d[0] and d[i] share the same region.
                     region.Add(d[i]);
