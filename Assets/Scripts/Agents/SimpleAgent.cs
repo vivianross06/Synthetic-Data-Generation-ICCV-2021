@@ -8,6 +8,10 @@ public class SimpleAgent : Agent
     private Screenshoter screenshot;
     private NavMeshAgent navMeshAgent;
     private List<List<Vector3>> regions = new List<List<Vector3>>();
+    private List<Vector3> corners = new List<Vector3>();
+    private double cornerDistance;
+    private double distanceTraveled;
+    private Vector3 movement;
     private Vector3 startPos;
     private float scStep;
     private Quaternion prevRotation;
@@ -35,7 +39,8 @@ public class SimpleAgent : Agent
                 agentDone = true;
 			}
 		}
-        if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
+        //if ( navMeshAgent.enabled && navMeshAgent.remainingDistance < 0.2f) {
+        if (corners.Count == 0 || corners.Count == 1) {
             elapsedTime = 0.0f;
             if (regions.Count > 0)
             {
@@ -46,8 +51,21 @@ public class SimpleAgent : Agent
                     NavMeshPath path = new NavMeshPath();
                     NavMesh.CalculatePath(transform.position, v, NavMesh.AllAreas, path);
                     totalDistance = PathLength(path);
+                    generateCorners(path);
+                    /*
+                    Debug.Log("position: " + transform.position);
+                    Debug.Log("first corner: " + corners[0]);
+                    Debug.Log("last corner: " + corners[corners.Count - 1]);
+                    Debug.Log("v: " + v);
+                    */
                 }
             }
+        }
+
+        if (transform.position == corners[0])
+        {
+            movement = interpolateCorners(corners);
+            distanceTraveled = 0;
         }
 
         float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (maxAngle));
@@ -58,12 +76,22 @@ public class SimpleAgent : Agent
             transform.GetChild(0).localRotation = q;
         Vector3 eulerRotation = transform.GetChild(0).localEulerAngles;
         transform.GetChild(0).localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
-
+        //transform.position = navMeshAgent.nextPosition;
+        transform.position = transform.position + movement;
+        distanceTraveled = distanceTraveled + scStep;
+        if (distanceTraveled >= cornerDistance)
+        {
+            transform.position = corners[0];
+        }
+        screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
+        //Debug.Log("screenshot position: " + transform.position.x + " " + transform.position.y + " " +transform.position.z);
+        /*
         if (Vector3.Distance(transform.position, startPos) >= scStep)
 		{
             startPos = transform.position;
             screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
         }
+        */
     }
 
     public override void StartAgent(List<(Vector3, Vector3)> bboxlist) {
@@ -72,6 +100,8 @@ public class SimpleAgent : Agent
         int totalPoints = OL_GLOBAL_INFO.TOTAL_POINTS;
         screenshot = GetComponent<Screenshoter>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+
+        navMeshAgent.updatePosition = false;
         //make regions
         NavMeshPath path = new NavMeshPath();
         List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
@@ -275,6 +305,31 @@ public class SimpleAgent : Agent
                 Gizmos.DrawSphere(navMeshAgent.destination, radius+0.01f);
         }
 
+    }
+
+    void generateCorners(NavMeshPath path)
+    {
+        corners = new List<Vector3>();
+        for (int i=0; i<path.corners.Length; i++)
+        {
+            corners.Add(new Vector3(path.corners[i].x, path.corners[i].y, path.corners[i].z));
+        }
+    }
+
+    Vector3 interpolateCorners(List<Vector3> corners)
+    {
+        if (corners.Count < 2)
+        {
+            return new Vector3(0, 0, 0);
+        }
+        else
+        {
+            Vector3 difference = corners[1] - corners[0];
+            cornerDistance = difference.magnitude;
+            Vector3 normalized = Vector3.Normalize(difference);
+            corners.RemoveAt(0);
+            return normalized * scStep;
+        }
     }
 
 }

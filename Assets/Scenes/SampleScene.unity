@@ -260,7 +260,7 @@ MonoBehaviour:
   stepDistance: 1
   horizontalAngleRange: {x: 0, y: 0}
   verticalAngleRange: {x: 0, y: 0}
-  seedFlythroughs: 0
+  seedFlythroughs: 1
 --- !u!4 &743955941
 Transform:
   m_ObjectHideFlags: 0
