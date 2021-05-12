@@ -23,7 +23,7 @@ public class SimpleAgent : Agent
     public int REPORT = 0;
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         REPORT = regions.Count;
         elapsedTime += Time.deltaTime;
@@ -68,8 +68,8 @@ public class SimpleAgent : Agent
             distanceTraveled = 0;
         }
 
-        float angleRatio = 1 - (Quaternion.Angle(prevRotation, nextRotation) / (maxAngle));
-        Quaternion q = Quaternion.Slerp(prevRotation, nextRotation, camTimer * angleRatio / OL_GLOBAL_INFO.CAM_ROTATION_DURATION);
+        float angleRatio = (float)(distanceTraveled/cornerDistance);
+        Quaternion q = Quaternion.Slerp(prevRotation, nextRotation, angleRatio);
         if (isNaN(q))
             transform.GetChild(0).localRotation = nextRotation;
         else
@@ -83,7 +83,7 @@ public class SimpleAgent : Agent
         {
             transform.position = corners[0];
         }
-        screenshot.CaptureScreenshot(Camera.main, Screen.width, Screen.height);
+        screenshot.CaptureScreenshot(Camera.main, OL_GLOBAL_INFO.SCREENSHOT_WIDTH, OL_GLOBAL_INFO.SCREENSHOT_HEIGHT);
         //Debug.Log("screenshot position: " + transform.position.x + " " + transform.position.y + " " +transform.position.z);
         /*
         if (Vector3.Distance(transform.position, startPos) >= scStep)
@@ -286,7 +286,8 @@ public class SimpleAgent : Agent
             camTimer = 0.0f;
             prevRotation = transform.GetChild(0).localRotation;
             nextRotation = Quaternion.Euler(Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_X), Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_Y, OL_GLOBAL_INFO.MAX_ROTATION_Y), 0);
-            yield return new WaitForSeconds(OL_GLOBAL_INFO.CAM_ROTATION_FREQUENCY);
+            //yield return new WaitForSeconds(OL_GLOBAL_INFO.CAM_ROTATION_FREQUENCY);
+            yield return 6;
         }
     }
 

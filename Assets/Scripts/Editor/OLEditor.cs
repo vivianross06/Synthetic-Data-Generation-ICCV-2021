@@ -125,6 +125,10 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(screenshotType));
 			}
 		}
+
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotWidth"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotHeight"));
+
 		if (GUILayout.Button("Take Screenshot"))
 		{
 			Screenshoter[] components = GameObject.FindObjectsOfType<Screenshoter> ();

@@ -25,6 +25,8 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public string loadOption = "";
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
+    [HideInInspector] public int screenshotWidth = 320;
+    [HideInInspector] public int screenshotHeight = 256;
     [HideInInspector] public uint agentWaypoints = 40;
     [HideInInspector] public float stepDistance = 1.0f;
     [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
@@ -43,6 +45,8 @@ public class OmniLoader : MonoBehaviour
         agentObj.SetActive(false);
         OL_GLOBAL_INFO.AGENT = agentObj;
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
+        OL_GLOBAL_INFO.SCREENSHOT_WIDTH = screenshotWidth;
+        OL_GLOBAL_INFO.SCREENSHOT_HEIGHT = screenshotHeight;
         OL_GLOBAL_INFO.TOTAL_POINTS = Convert.ToInt32(agentWaypoints);
         OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS = stepDistance;
         OL_GLOBAL_INFO.MIN_ROTATION_Y = horizontalAngleRange[0];
@@ -173,6 +177,8 @@ public static class OL_GLOBAL_INFO
     public static string DATASET;
     public static string SCENE_ID;
     public static List<ScreenShotType> SCREENSHOT_PROPERTIES;
+    public static int SCREENSHOT_WIDTH = 320;
+    public static int SCREENSHOT_HEIGHT = 256;
     public static string SCREENSHOT_FILENAME = "";
     public static int TOTAL_POINTS = 40;
     public static float DISTANCE_BETWEEN_SCREENSHOTS = 0.1f;
