@@ -107,7 +107,7 @@ public class OmniLoader : MonoBehaviour
                 OL_GLOBAL_INFO.SCENE_NAME = sceneIDs[0];
                 sceneLoader.SetNextScene(sceneIDs[0]);
                 sceneIDs.RemoveAt(0);
-                Destroy(currentScene);
+                DestroyImmediate(currentScene);
                 currentScene = sceneLoader.Load();
                 sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
