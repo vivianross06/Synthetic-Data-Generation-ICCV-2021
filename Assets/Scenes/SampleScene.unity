@@ -245,9 +245,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
-  LoaderScript: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
+  LoaderScript: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
   loadMode: 2
-  loadOption: 00a073deec8ea7b7fbfbf7937efa9273
+  loadOption: 7y3sRwLe3Va
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs:
   - shader: {fileID: 4800000, guid: 21f2bd9c2f85a264c86857ccde11b256, type: 3}
@@ -256,7 +256,9 @@ MonoBehaviour:
   - shader: {fileID: 4800000, guid: 59a3c9c901fac4b339dbbd6dd0343135, type: 3}
     directoryName: Depth
     formatType: 1
-  agentWaypoints: 100
+  screenshotWidth: 320
+  screenshotHeight: 256
+  agentWaypoints: 5
   stepDistance: 1
   horizontalAngleRange: {x: 0, y: 0}
   verticalAngleRange: {x: 0, y: 0}
@@ -284,15 +286,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 743955939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
+  m_Script: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  house:
-    id: 
-    front: []
-    up: []
-    scaleToMeters: 0
-    levels: []
 --- !u!1 &959729371
 GameObject:
   m_ObjectHideFlags: 0

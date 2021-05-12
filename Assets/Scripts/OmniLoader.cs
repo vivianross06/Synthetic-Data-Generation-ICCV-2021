@@ -113,6 +113,11 @@ public class OmniLoader : MonoBehaviour
             }
 
         }
+        if (sceneAgent.agentDone == true)
+        {
+            Debug.Log("quitting");
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
     }
 
     private List<string> generateIDs()

@@ -25,6 +25,10 @@ public class SimpleAgent : Agent
     // Update is called once per frame
     void Update()
     {
+        if (agentDone == true)
+        {
+            return;
+        }
         REPORT = regions.Count;
         elapsedTime += Time.deltaTime;
         camTimer += Time.deltaTime;
