@@ -38,6 +38,7 @@ public class OmniLoader : MonoBehaviour
     private Loader sceneLoader;
     private Agent sceneAgent;
     private NavMeshAgent nma;
+    private Screenshoter screenshotRef;
 
     // Start is called before the first frame update
     void Start()
@@ -60,7 +61,7 @@ public class OmniLoader : MonoBehaviour
         if (AgentScript != null)
             agentObj.AddComponent(AgentScript.GetClass());
         if (ScreenshotScript != null)
-            agentObj.AddComponent(ScreenshotScript.GetClass());
+            screenshotRef = (Screenshoter)(agentObj.AddComponent(ScreenshotScript.GetClass()));
         nma = agentObj.AddComponent<NavMeshAgent>();
         nma.enabled = false;
         //modify desired values of NavMeshAgent component here.
@@ -111,6 +112,7 @@ public class OmniLoader : MonoBehaviour
                 sceneIDs.RemoveAt(0);
                 DestroyImmediate(currentScene);
                 currentScene = sceneLoader.Load();
+                screenshotRef.ResetCounter();
                 sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 

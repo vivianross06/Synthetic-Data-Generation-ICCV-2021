@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class SimpleAgent : Agent
 {
-    private Screenshoter screenshot;
+    public Screenshoter screenshot;
     private NavMeshAgent navMeshAgent;
     private List<List<Vector3>> regions = new List<List<Vector3>>();
     private List<Vector3> corners = new List<Vector3>();
@@ -39,7 +39,7 @@ public class SimpleAgent : Agent
                 navMeshAgent.Warp(navMeshAgent.destination);
             else
 			{
-                screenshot.ResetCounter();
+                //screenshot.ResetCounter();
                 agentDone = true;
 			}
 		}
@@ -151,7 +151,7 @@ public class SimpleAgent : Agent
         }
         else
         {
-            screenshot.ResetCounter();
+            //screenshot.ResetCounter();
             agentDone = true;
             navMeshAgent.enabled = false;
         }
