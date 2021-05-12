@@ -69,7 +69,9 @@ public class SimpleAgent : Agent
         if (transform.position == corners[0])
         {
             movement = interpolateCorners(corners);
+            interpolateCornerRotations(movement);
             distanceTraveled = 0;
+            transform.LookAt(corners[0]);
         }
 
         float angleRatio = (float)(distanceTraveled/cornerDistance);
@@ -106,6 +108,7 @@ public class SimpleAgent : Agent
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         navMeshAgent.updatePosition = false;
+        navMeshAgent.updateRotation = false;
         //make regions
         NavMeshPath path = new NavMeshPath();
         List<Vector3> d = createRandomPoints(bboxlist, totalPoints);
@@ -334,6 +337,16 @@ public class SimpleAgent : Agent
             Vector3 normalized = Vector3.Normalize(difference);
             corners.RemoveAt(0);
             return normalized * scStep;
+        }
+    }
+
+    void interpolateCornerRotations(Vector3 movement)
+    {
+        Quaternion nextRotation = Quaternion.LookRotation(movement, Vector3.up);
+        while (!(transform.GetChild(0).rotation == nextRotation))
+        {
+            transform.GetChild(0).rotation = Quaternion.RotateTowards(transform.GetChild(0).rotation, nextRotation, 5);
+            screenshot.CaptureScreenshot(Camera.main, OL_GLOBAL_INFO.SCREENSHOT_WIDTH, OL_GLOBAL_INFO.SCREENSHOT_HEIGHT);
         }
     }
 
