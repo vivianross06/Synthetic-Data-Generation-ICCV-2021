@@ -100,6 +100,7 @@ public class OLEditor : Editor
 		}
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("rotationDegrees"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("seedFlythroughs"));
 
 		if (ol.ScreenshotScript == null)

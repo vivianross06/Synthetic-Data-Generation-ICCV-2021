@@ -259,7 +259,7 @@ MonoBehaviour:
   screenshotWidth: 320
   screenshotHeight: 256
   agentWaypoints: 5
-  stepDistance: 1
+  stepDistance: 0.3
   horizontalAngleRange: {x: 0, y: 0}
   verticalAngleRange: {x: 0, y: 0}
   seedFlythroughs: 1

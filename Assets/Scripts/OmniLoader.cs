@@ -23,6 +23,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
     [HideInInspector] public LoadModeEnum loadMode = LoadModeEnum.CompleteDirectory;
     [HideInInspector] public string loadOption = "";
+    [HideInInspector] public int rotationDegrees = 5;
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public int screenshotWidth = 320;
@@ -44,6 +45,7 @@ public class OmniLoader : MonoBehaviour
         GameObject agentObj = new GameObject("Agent");
         agentObj.SetActive(false);
         OL_GLOBAL_INFO.AGENT = agentObj;
+        OL_GLOBAL_INFO.ROTATION_INCREMENT_DEGREES = rotationDegrees;
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
         OL_GLOBAL_INFO.SCREENSHOT_WIDTH = screenshotWidth;
         OL_GLOBAL_INFO.SCREENSHOT_HEIGHT = screenshotHeight;
@@ -197,6 +199,7 @@ public static class OL_GLOBAL_INFO
     public static List<(Vector3, Vector3)> BBOX_LIST;
     public static string SCENE_NAME;
     public static bool SEED;
+    public static int ROTATION_INCREMENT_DEGREES = 5;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;

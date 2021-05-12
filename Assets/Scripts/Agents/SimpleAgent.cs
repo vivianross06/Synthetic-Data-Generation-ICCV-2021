@@ -71,6 +71,7 @@ public class SimpleAgent : Agent
             movement = interpolateCorners(corners);
             interpolateCornerRotations(movement);
             distanceTraveled = 0;
+            //transform.GetChild(0).LookAt(corners[0]);
             transform.LookAt(corners[0]);
         }
 
@@ -343,10 +344,16 @@ public class SimpleAgent : Agent
     void interpolateCornerRotations(Vector3 movement)
     {
         Quaternion nextRotation = Quaternion.LookRotation(movement, Vector3.up);
+        int count = 0;
         while (!(transform.GetChild(0).rotation == nextRotation))
         {
             transform.GetChild(0).rotation = Quaternion.RotateTowards(transform.GetChild(0).rotation, nextRotation, 5);
             screenshot.CaptureScreenshot(Camera.main, OL_GLOBAL_INFO.SCREENSHOT_WIDTH, OL_GLOBAL_INFO.SCREENSHOT_HEIGHT);
+            count++;
+            if (count > 90)
+            {
+                break;
+            }
         }
     }
 
