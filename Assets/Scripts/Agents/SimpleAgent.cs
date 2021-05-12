@@ -347,7 +347,7 @@ public class SimpleAgent : Agent
         int count = 0;
         while (!(transform.GetChild(0).rotation == nextRotation))
         {
-            transform.GetChild(0).rotation = Quaternion.RotateTowards(transform.GetChild(0).rotation, nextRotation, 5);
+            transform.GetChild(0).rotation = Quaternion.RotateTowards(transform.GetChild(0).rotation, nextRotation, OL_GLOBAL_INFO.ROTATION_INCREMENT_DEGREES);
             screenshot.CaptureScreenshot(Camera.main, OL_GLOBAL_INFO.SCREENSHOT_WIDTH, OL_GLOBAL_INFO.SCREENSHOT_HEIGHT);
             count++;
             if (count > 90)
