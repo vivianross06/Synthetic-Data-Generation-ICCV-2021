@@ -117,6 +117,7 @@ public class OmniLoader : MonoBehaviour
                 DestroyImmediate(currentScene);
                 EditorUtility.UnloadUnusedAssetsImmediate(true);
                 currentScene = sceneLoader.Load();
+                screenshotRef.ResetCounter();
                 sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 
