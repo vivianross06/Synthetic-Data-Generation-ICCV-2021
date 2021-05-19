@@ -110,9 +110,13 @@ public class OmniLoader : MonoBehaviour
                 OL_GLOBAL_INFO.SCENE_NAME = sceneIDs[0];
                 sceneLoader.SetNextScene(sceneIDs[0]);
                 sceneIDs.RemoveAt(0);
+                foreach (Renderer rend in currentScene.GetComponentsInChildren<Renderer>())
+                {
+                    Texture.DestroyImmediate(rend.material.mainTexture, true);
+                }
                 DestroyImmediate(currentScene);
+                EditorUtility.UnloadUnusedAssetsImmediate(true);
                 currentScene = sceneLoader.Load();
-                screenshotRef.ResetCounter();
                 sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 
