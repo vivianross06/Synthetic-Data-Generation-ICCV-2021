@@ -128,7 +128,7 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(screenshotType));
 			}
 		}
-
+		EditorGUILayout.HelpBox("Make sure the viewport resolution under the \"Game\" tab matches the screenshot size parameters, or the camera intrinsic matrix will be off!", MessageType.None);
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotWidth"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotHeight"));
 
@@ -138,14 +138,14 @@ public class OLEditor : Editor
 			if (components.Length == 0)
 			{
 				Screenshoter sc = (Screenshoter)Camera.main.gameObject.AddComponent(ol.ScreenshotScript.GetClass());
-				sc.CaptureScreenshot(Camera.main, 1710, 840);
+				sc.CaptureScreenshot(Camera.main, ol.screenshotWidth, ol.screenshotHeight);
 				DestroyImmediate(sc);
 
 			}
 			else
 			{
 				Screenshoter sc = components[0];
-				sc.CaptureScreenshot(Camera.main, 1710, 840);
+				sc.CaptureScreenshot(Camera.main, ol.screenshotWidth, ol.screenshotHeight);
 			}
 		}
 

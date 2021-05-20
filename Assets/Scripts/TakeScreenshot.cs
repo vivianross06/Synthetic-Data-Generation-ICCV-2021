@@ -61,10 +61,8 @@ public class TakeScreenshot : Screenshoter
         var tex_RGB = new Texture2D(width, height, TextureFormat.RGBA32, false);
         var tex_DEPTH = new Texture2D(width, height, TextureFormat.R16, false, true);
         // Must use 24-bit depth buffer to be able to fill background.
-        var render_texture = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
+        RenderTexture render_texture;
         var grab_area = new Rect(0, 0, width, height);
-        RenderTexture.active = render_texture;
-        cam.targetTexture = render_texture;
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.black;
         // Simple: use a clear background
@@ -125,6 +123,7 @@ public class TakeScreenshot : Screenshoter
                 Shot = ImageConversion.EncodeToPNG(tex_DEPTH);
                 extention = ".png";
             }
+            RenderTexture.ReleaseTemporary(render_texture);
             string savePath = specificPath + dir + filename + countString + extention;
             File.WriteAllBytes(savePath, Shot);
         }
@@ -150,7 +149,6 @@ public class TakeScreenshot : Screenshoter
         cam.clearFlags = bak_cam_clearFlags;
         cam.targetTexture = bak_cam_targetTexture;
         RenderTexture.active = bak_RenderTexture_active;
-        RenderTexture.ReleaseTemporary(render_texture);
         Texture2D.DestroyImmediate(tex_RGB);
         Texture2D.DestroyImmediate(tex_DEPTH);
         counter++;
