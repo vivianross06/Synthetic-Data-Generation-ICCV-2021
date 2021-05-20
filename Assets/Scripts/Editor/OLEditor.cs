@@ -82,6 +82,7 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughName"));
 		showRangeH = EditorGUILayout.Foldout(showRangeH, "Horizontal Angle Range");
 		if (showRangeH)
 		{
@@ -99,7 +100,9 @@ public class OLEditor : Editor
 			EditorGUI.indentLevel--;
 		}
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentHeight"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("rotationDegrees"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("seedFlythroughs"));
 
 		if (ol.ScreenshotScript == null)
@@ -125,7 +128,7 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(screenshotType));
 			}
 		}
-
+		EditorGUILayout.HelpBox("Make sure the viewport resolution under the \"Game\" tab matches the screenshot size parameters, or the camera intrinsic matrix will be off!", MessageType.None);
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotWidth"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("screenshotHeight"));
 
@@ -135,14 +138,14 @@ public class OLEditor : Editor
 			if (components.Length == 0)
 			{
 				Screenshoter sc = (Screenshoter)Camera.main.gameObject.AddComponent(ol.ScreenshotScript.GetClass());
-				sc.CaptureScreenshot(Camera.main, 1710, 840);
+				sc.CaptureScreenshot(Camera.main, ol.screenshotWidth, ol.screenshotHeight);
 				DestroyImmediate(sc);
 
 			}
 			else
 			{
 				Screenshoter sc = components[0];
-				sc.CaptureScreenshot(Camera.main, 1710, 840);
+				sc.CaptureScreenshot(Camera.main, ol.screenshotWidth, ol.screenshotHeight);
 			}
 		}
 

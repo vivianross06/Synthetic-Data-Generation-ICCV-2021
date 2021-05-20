@@ -23,6 +23,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public MonoScript LoaderScript; //Loader is responsible for NavMesh generation
     [HideInInspector] public LoadModeEnum loadMode = LoadModeEnum.CompleteDirectory;
     [HideInInspector] public string loadOption = "";
+    [HideInInspector] public int rotationDegrees = 5;
     [HideInInspector] public MonoScript ScreenshotScript;
     [HideInInspector] public List<ScreenShotType> scs = new List<ScreenShotType>(0);
     [HideInInspector] public int screenshotWidth = 320;
@@ -32,11 +33,14 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
     [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0, 0);
     [HideInInspector] public bool seedFlythroughs = false;
+    [HideInInspector] public string flythroughName = "";
+    [HideInInspector] public float agentHeight = 1.5f;
     private List<string> sceneIDs;
     private GameObject currentScene;
     private Loader sceneLoader;
     private Agent sceneAgent;
     private NavMeshAgent nma;
+    private Screenshoter screenshotRef;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +48,7 @@ public class OmniLoader : MonoBehaviour
         GameObject agentObj = new GameObject("Agent");
         agentObj.SetActive(false);
         OL_GLOBAL_INFO.AGENT = agentObj;
+        OL_GLOBAL_INFO.ROTATION_INCREMENT_DEGREES = rotationDegrees;
         OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = scs;
         OL_GLOBAL_INFO.SCREENSHOT_WIDTH = screenshotWidth;
         OL_GLOBAL_INFO.SCREENSHOT_HEIGHT = screenshotHeight;
@@ -54,11 +59,12 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.MIN_ROTATION_X = verticalAngleRange[0];
         OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];
         OL_GLOBAL_INFO.SEED = seedFlythroughs;
+	OL_GLOBAL_INFO.FTNAME = flythroughName;
 
         if (AgentScript != null)
             agentObj.AddComponent(AgentScript.GetClass());
         if (ScreenshotScript != null)
-            agentObj.AddComponent(ScreenshotScript.GetClass());
+            screenshotRef = (Screenshoter)(agentObj.AddComponent(ScreenshotScript.GetClass()));
         nma = agentObj.AddComponent<NavMeshAgent>();
         nma.enabled = false;
         //modify desired values of NavMeshAgent component here.
@@ -69,7 +75,7 @@ public class OmniLoader : MonoBehaviour
         {
             GameObject camera = Camera.main.gameObject;
             camera.transform.SetParent(agentObj.transform);
-            camera.transform.localPosition = new Vector3(0, 1.5f, 0);
+            camera.transform.localPosition = new Vector3(0, agentHeight, 0);
             camera.transform.localRotation = Quaternion.identity;
         }
 
@@ -107,14 +113,26 @@ public class OmniLoader : MonoBehaviour
                 OL_GLOBAL_INFO.SCENE_NAME = sceneIDs[0];
                 sceneLoader.SetNextScene(sceneIDs[0]);
                 sceneIDs.RemoveAt(0);
+                foreach (Renderer rend in currentScene.GetComponentsInChildren<Renderer>())
+                {
+                    Texture.DestroyImmediate(rend.material.mainTexture, true);
+                }
                 DestroyImmediate(currentScene);
+                EditorUtility.UnloadUnusedAssetsImmediate(true);
                 currentScene = sceneLoader.Load();
+                screenshotRef.ResetCounter();
                 sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
             }
 
         }
         if (sceneAgent.agentDone == true)
         {
+	    foreach (Renderer rend in currentScene.GetComponentsInChildren<Renderer>())
+            {
+                Texture.DestroyImmediate(rend.material.mainTexture, true);
+            }
+            DestroyImmediate(currentScene);
+            EditorUtility.UnloadUnusedAssetsImmediate(true);
             Debug.Log("quitting");
             UnityEditor.EditorApplication.isPlaying = false;
         }
@@ -197,6 +215,8 @@ public static class OL_GLOBAL_INFO
     public static List<(Vector3, Vector3)> BBOX_LIST;
     public static string SCENE_NAME;
     public static bool SEED;
+    public static string FTNAME;
+    public static int ROTATION_INCREMENT_DEGREES = 5;
 
     public static void setLayerOfAll(GameObject root, int layer) {
         root.layer = layer;

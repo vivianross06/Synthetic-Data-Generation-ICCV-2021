@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -246,8 +246,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
   LoaderScript: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
-  loadMode: 2
-  loadOption: 7y3sRwLe3Va
+  loadMode: 0
+  loadOption: 
+  rotationDegrees: 2
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs:
   - shader: {fileID: 4800000, guid: 21f2bd9c2f85a264c86857ccde11b256, type: 3}
@@ -258,11 +259,13 @@ MonoBehaviour:
     formatType: 1
   screenshotWidth: 320
   screenshotHeight: 256
-  agentWaypoints: 5
-  stepDistance: 1
+  agentWaypoints: 10
+  stepDistance: 0.1
   horizontalAngleRange: {x: 0, y: 0}
-  verticalAngleRange: {x: 0, y: 0}
+  verticalAngleRange: {x: -40, y: 40}
   seedFlythroughs: 1
+  flythroughName: 40
+  agentHeight: 1.5
 --- !u!4 &743955941
 Transform:
   m_ObjectHideFlags: 0
