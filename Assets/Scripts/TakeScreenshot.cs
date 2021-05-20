@@ -14,7 +14,11 @@ public class TakeScreenshot : Screenshoter
 
     private void Start()
     {
-        string date = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        string date;
+	if(OL_GLOBAL_INFO.FTNAME == "")
+		date = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+	else
+		date = OL_GLOBAL_INFO.FTNAME;
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
         path = Application.dataPath + "/../ol_output/";

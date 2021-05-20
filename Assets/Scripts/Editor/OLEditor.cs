@@ -82,6 +82,7 @@ public class OLEditor : Editor
 					DestroyImmediate(ol.gameObject.GetComponent(agentType));
 			}
 		}*/
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughName"));
 		showRangeH = EditorGUILayout.Foldout(showRangeH, "Horizontal Angle Range");
 		if (showRangeH)
 		{
@@ -99,6 +100,7 @@ public class OLEditor : Editor
 			EditorGUI.indentLevel--;
 		}
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentHeight"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("rotationDegrees"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("seedFlythroughs"));
