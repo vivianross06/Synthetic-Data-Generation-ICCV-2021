@@ -12,8 +12,8 @@ public class OLEditor : Editor
 
     int ListSize;
 	bool showList = true;
-	bool showRangeH = true;
-	bool showRangeV = true;
+	//bool showRangeH = true;
+	//bool showRangeV = true;
 
     public override void OnInspectorGUI()
 	{
@@ -83,7 +83,7 @@ public class OLEditor : Editor
 			}
 		}*/
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("flythroughName"));
-		showRangeH = EditorGUILayout.Foldout(showRangeH, "Horizontal Angle Range");
+		/*showRangeH = EditorGUILayout.Foldout(showRangeH, "Horizontal Angle Range");
 		if (showRangeH)
 		{
 			EditorGUI.indentLevel++;
@@ -98,7 +98,8 @@ public class OLEditor : Editor
 			ol.verticalAngleRange[0] = EditorGUILayout.FloatField("Min", ol.verticalAngleRange[0]);
 			ol.verticalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.verticalAngleRange[1]);
 			EditorGUI.indentLevel--;
-		}
+		}*/
+		EditorGUILayout.PropertyField(GetTarget.FindProperty("parallaxAngle"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentHeight"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));

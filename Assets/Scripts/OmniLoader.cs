@@ -32,6 +32,7 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public float stepDistance = 1.0f;
     [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
     [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0, 0);
+    [HideInInspector] public float parallaxAngle = 0;
     [HideInInspector] public bool seedFlythroughs = false;
     [HideInInspector] public string flythroughName = "";
     [HideInInspector] public float agentHeight = 1.5f;
@@ -58,6 +59,7 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.MAX_ROTATION_Y = horizontalAngleRange[1];
         OL_GLOBAL_INFO.MIN_ROTATION_X = verticalAngleRange[0];
         OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];
+        OL_GLOBAL_INFO.PARALLAX_ANGLE = parallaxAngle;
         OL_GLOBAL_INFO.SEED = seedFlythroughs;
 	OL_GLOBAL_INFO.FTNAME = flythroughName;
 
@@ -210,6 +212,7 @@ public static class OL_GLOBAL_INFO
     public static float MAX_ROTATION_X = 0f;
     public static float MIN_ROTATION_Y = 0f;
     public static float MAX_ROTATION_Y = 0f;
+    public static float PARALLAX_ANGLE = 0f;
     public static float CAM_ROTATION_DURATION = 0.5f;
     public static float CAM_ROTATION_FREQUENCY = 0.5f;
     public static List<(Vector3, Vector3)> BBOX_LIST;

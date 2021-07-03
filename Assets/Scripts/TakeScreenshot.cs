@@ -21,7 +21,8 @@ public class TakeScreenshot : Screenshoter
 		date = OL_GLOBAL_INFO.FTNAME;
         counter = 0;
         filename = OL_GLOBAL_INFO.SCREENSHOT_FILENAME;
-        path = Application.dataPath + "/../ol_output/";
+        //path = Application.dataPath + "/../ol_output/";
+        path = "D:/4Eyes/ol_output/";
         Directory.CreateDirectory(path); //creates directory
         path = path + date + "/";
         Directory.CreateDirectory(path);

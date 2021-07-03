@@ -246,8 +246,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
   LoaderScript: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
-  loadMode: 0
-  loadOption: 
+  loadMode: 2
+  loadOption: 1pXnuDYAj8r
   rotationDegrees: 2
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs:
@@ -262,9 +262,10 @@ MonoBehaviour:
   agentWaypoints: 10
   stepDistance: 0.1
   horizontalAngleRange: {x: 0, y: 0}
-  verticalAngleRange: {x: -40, y: 40}
+  verticalAngleRange: {x: 0, y: 0}
+  parallaxAngle: 0
   seedFlythroughs: 1
-  flythroughName: 40
+  flythroughName: 
   agentHeight: 1.5
 --- !u!4 &743955941
 Transform:

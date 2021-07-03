@@ -19,7 +19,6 @@ public class SimpleAgent : Agent
     private float totalDistance = 1;
     public float elapsedTime;
     private float camTimer;
-    private float maxAngle;
     private bool isRotating = false;
     // Update is called once per frame
     void Update()
@@ -73,15 +72,19 @@ public class SimpleAgent : Agent
                 distanceTraveled = 0;
             }
 
-            float angleRatio = (float)(distanceTraveled / cornerDistance);
+            /*float angleRatio = (float)(distanceTraveled / cornerDistance);
             Quaternion q = Quaternion.Slerp(prevRotation, nextRotation, angleRatio);
             if (isNaN(q))
             {
-                Camera.main.gameObject.transform.localRotation = nextRotation;
+                Camera.main.gameObject.transform.parent.localRotation = nextRotation;
 
             }
-            Vector3 eulerRotation = Camera.main.gameObject.transform.localEulerAngles;
-            Camera.main.gameObject.transform.localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
+            else
+			{
+                Camera.main.gameObject.transform.parent.localRotation = q;
+            }*/
+            Vector3 eulerRotation = Camera.main.gameObject.transform.parent.localEulerAngles;
+            Camera.main.gameObject.transform.parent.localRotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
             transform.position = transform.position + movement;
             distanceTraveled = distanceTraveled + scStep;
             if (distanceTraveled >= cornerDistance)
@@ -123,17 +126,22 @@ public class SimpleAgent : Agent
             }
             regions.Add(region);
         }
+        gameObject.SetActive(true);
+        Vector3 localPos = Camera.main.gameObject.transform.localPosition;
         transform.position = regions[0][0];
         startPos = transform.position;
         elapsedTime = 0.0f;
         navMeshAgent.enabled = true;
-        gameObject.SetActive(true);
-        maxAngle = CalculateMaxAngleRatio();
-        StartCoroutine(SetCameraLookAngle());
+
         GameObject rotFix = new GameObject("rotFix");
         rotFix.transform.parent = this.transform;
-        rotFix.transform.localEulerAngles = new Vector3(0, 0, 0);
         Camera.main.gameObject.transform.parent = rotFix.transform;
+        rotFix.transform.position = transform.position;
+        Camera.main.gameObject.transform.localPosition = localPos;
+        Camera.main.transform.localEulerAngles = new Vector3(0, OL_GLOBAL_INFO.PARALLAX_ANGLE, 0);
+
+        //StartCoroutine(SetCameraLookAngle());
+        
     }
 
     public void ResetAgent(List<List<Vector3>> regions)
@@ -209,37 +217,6 @@ public class SimpleAgent : Agent
         return randomPoints;
     }
 
-    public float CalculateMaxAngleRatio()
-    {
-
-        //Code to compute max angle rotation neeed for angleRatio
-        Quaternion Q1 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
-        Quaternion Q2 = Quaternion.Euler(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
-        Quaternion Q3 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MIN_ROTATION_Y, 0);
-        Quaternion Q4 = Quaternion.Euler(OL_GLOBAL_INFO.MAX_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_Y, 0);
-        float[] a = new float[10];
-        a[0] = Quaternion.Angle(Q1, Q1);
-        a[1] = Quaternion.Angle(Q1, Q2);
-        a[2] = Quaternion.Angle(Q1, Q3);
-        a[3] = Quaternion.Angle(Q1, Q4);
-        a[4] = Quaternion.Angle(Q2, Q2);
-        a[5] = Quaternion.Angle(Q2, Q3);
-        a[6] = Quaternion.Angle(Q2, Q4);
-        a[7] = Quaternion.Angle(Q3, Q3);
-        a[8] = Quaternion.Angle(Q3, Q4);
-        a[9] = Quaternion.Angle(Q4, Q4);
-
-        float maxAngle = a[0];
-
-        for (int i = 1; i < 10; i++)
-        {
-
-            if (a[i] > maxAngle)
-                maxAngle = a[i];
-        }
-
-        return maxAngle;
-    }
 
     private bool isNaN(Quaternion myQuaternion)
     {
@@ -266,10 +243,11 @@ public class SimpleAgent : Agent
 
     IEnumerator SetCameraLookAngle()
     {
+        //Unused, randomness is not good.
         for (; ; )
         {
             camTimer = 0.0f;
-            prevRotation = Camera.main.gameObject.transform.localRotation;
+            prevRotation = Camera.main.gameObject.transform.parent.localRotation;
             nextRotation = Quaternion.Euler(Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_X, OL_GLOBAL_INFO.MAX_ROTATION_X), Random.Range(OL_GLOBAL_INFO.MIN_ROTATION_Y, OL_GLOBAL_INFO.MAX_ROTATION_Y), 0);
             //yield return new WaitForSeconds(OL_GLOBAL_INFO.CAM_ROTATION_FREQUENCY);
             yield return 6;
@@ -322,10 +300,10 @@ public class SimpleAgent : Agent
     {
         Quaternion nextRotation = Quaternion.LookRotation(movement, Vector3.up);
         //int count = 0;
-        while (!(Camera.main.gameObject.transform.rotation == nextRotation))
+        while (!(Camera.main.gameObject.transform.parent.rotation == nextRotation))
         {
             isRotating = true;
-            Camera.main.gameObject.transform.rotation = Quaternion.RotateTowards(Camera.main.gameObject.transform.rotation, nextRotation, OL_GLOBAL_INFO.ROTATION_INCREMENT_DEGREES);
+            Camera.main.gameObject.transform.parent.rotation = Quaternion.RotateTowards(Camera.main.gameObject.transform.parent.rotation, nextRotation, OL_GLOBAL_INFO.ROTATION_INCREMENT_DEGREES);
             screenshot.CaptureScreenshot(Camera.main, OL_GLOBAL_INFO.SCREENSHOT_WIDTH, OL_GLOBAL_INFO.SCREENSHOT_HEIGHT);
             yield return 0;
         }
