@@ -10,12 +10,13 @@ public class OLEditor : Editor
 	private Type loaderType;
 	private Type screenshotType;
 
-    int ListSize;
+	int ListSize;
 	bool showList = true;
+	bool showParallax = true;
 	//bool showRangeH = true;
 	//bool showRangeV = true;
 
-    public override void OnInspectorGUI()
+	public override void OnInspectorGUI()
 	{
 		base.OnInspectorGUI();
 		OmniLoader ol = (OmniLoader)target;
@@ -99,7 +100,14 @@ public class OLEditor : Editor
 			ol.verticalAngleRange[1] = EditorGUILayout.FloatField("Max", ol.verticalAngleRange[1]);
 			EditorGUI.indentLevel--;
 		}*/
-		EditorGUILayout.PropertyField(GetTarget.FindProperty("parallaxAngle"));
+		showParallax = EditorGUILayout.Foldout(showParallax, "Camera Parallax");
+		if (showParallax)
+		{
+			EditorGUI.indentLevel++;
+			ol.parallaxAngle[0] = EditorGUILayout.FloatField("Horizontal Angle", ol.parallaxAngle[0]);
+			ol.parallaxAngle[1] = EditorGUILayout.FloatField("Vertical Angle", ol.parallaxAngle[1]);
+			EditorGUI.indentLevel--;
+		}
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentWaypoints"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("agentHeight"));
 		EditorGUILayout.PropertyField(GetTarget.FindProperty("stepDistance"));
@@ -135,7 +143,7 @@ public class OLEditor : Editor
 
 		if (GUILayout.Button("Take Screenshot"))
 		{
-			Screenshoter[] components = GameObject.FindObjectsOfType<Screenshoter> ();
+			Screenshoter[] components = GameObject.FindObjectsOfType<Screenshoter>();
 			if (components.Length == 0)
 			{
 				Screenshoter sc = (Screenshoter)Camera.main.gameObject.AddComponent(ol.ScreenshotScript.GetClass());
@@ -153,93 +161,93 @@ public class OLEditor : Editor
 		//List code starts after here.
 		//Code for custom class list in inspector originially from user ForceX of Unity Fourm.
 		showList = EditorGUILayout.Foldout(showList, "Screenshot Properties");
-		if(showList)
+		if (showList)
 		{
-		SerializedProperty ThisList;
-        //SerializedObject GetTarget = new SerializedObject(target); I put this line earlier.
-        ThisList = GetTarget.FindProperty("scs");
-		//List<ScreenShotType> ThisList = ol.scs;
-		//EditorGUILayout.Space();
-		//EditorGUILayout.Space();
-		//EditorGUILayout.Space();
+			SerializedProperty ThisList;
+			//SerializedObject GetTarget = new SerializedObject(target); I put this line earlier.
+			ThisList = GetTarget.FindProperty("scs");
+			//List<ScreenShotType> ThisList = ol.scs;
+			//EditorGUILayout.Space();
+			//EditorGUILayout.Space();
+			//EditorGUILayout.Space();
 
-		//Resize our list
-		EditorGUILayout.Space();
-        //EditorGUILayout.LabelField("Define the list size with a number");
-        ListSize = ThisList.arraySize;
-        ListSize = EditorGUILayout.IntField("List Size", ListSize);
+			//Resize our list
+			EditorGUILayout.Space();
+			//EditorGUILayout.LabelField("Define the list size with a number");
+			ListSize = ThisList.arraySize;
+			ListSize = EditorGUILayout.IntField("List Size", ListSize);
 
-        if (ListSize != ThisList.arraySize)
-        {
-            while (ListSize > ThisList.arraySize)
-            {
-                ThisList.InsertArrayElementAtIndex(ThisList.arraySize);
-            }
-            while (ListSize < ThisList.arraySize)
-            {
-                ThisList.DeleteArrayElementAtIndex(ThisList.arraySize - 1);
-            }
-        }
+			if (ListSize != ThisList.arraySize)
+			{
+				while (ListSize > ThisList.arraySize)
+				{
+					ThisList.InsertArrayElementAtIndex(ThisList.arraySize);
+				}
+				while (ListSize < ThisList.arraySize)
+				{
+					ThisList.DeleteArrayElementAtIndex(ThisList.arraySize - 1);
+				}
+			}
 
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
-        //EditorGUILayout.LabelField("Or");
-        //EditorGUILayout.Space();
-        EditorGUILayout.Space();
+			EditorGUILayout.Space();
+			EditorGUILayout.Space();
+			//EditorGUILayout.LabelField("Or");
+			//EditorGUILayout.Space();
+			EditorGUILayout.Space();
 
-        //Or add a new item to the List<> with a button
-        EditorGUILayout.LabelField("Add a new item with a button");
+			//Or add a new item to the List<> with a button
+			EditorGUILayout.LabelField("Add a new item with a button");
 
-        if (GUILayout.Button("Add New"))
-        {
-            ScreenShotType sct = new ScreenShotType();
-            sct.shader = null;
-            sct.directoryName = "";
-            sct.formatType = FormatEnum.RGB;
-            ol.scs.Add(sct);
-        }
+			if (GUILayout.Button("Add New"))
+			{
+				ScreenShotType sct = new ScreenShotType();
+				sct.shader = null;
+				sct.directoryName = "";
+				sct.formatType = FormatEnum.RGB;
+				ol.scs.Add(sct);
+			}
 
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
+			EditorGUILayout.Space();
+			EditorGUILayout.Space();
 
-        //Display our list to the inspector window
+			//Display our list to the inspector window
 
-        for (int i = 0; i < ThisList.arraySize; i++)
-        {
-            SerializedProperty MyListRef = ThisList.GetArrayElementAtIndex(i);
-            SerializedProperty MyInt = MyListRef.FindPropertyRelative("shader");
-            SerializedProperty MyFloat = MyListRef.FindPropertyRelative("directoryName");
-            SerializedProperty MyVect3 = MyListRef.FindPropertyRelative("formatType");
-			//SerializedProperty MyGO = MyListRef.FindPropertyRelative("AnGO");
+			for (int i = 0; i < ThisList.arraySize; i++)
+			{
+				SerializedProperty MyListRef = ThisList.GetArrayElementAtIndex(i);
+				SerializedProperty MyInt = MyListRef.FindPropertyRelative("shader");
+				SerializedProperty MyFloat = MyListRef.FindPropertyRelative("directoryName");
+				SerializedProperty MyVect3 = MyListRef.FindPropertyRelative("formatType");
+				//SerializedProperty MyGO = MyListRef.FindPropertyRelative("AnGO");
 
 
-			// Display the property fields in two ways.
+				// Display the property fields in two ways.
 
-			// Choose to display automatic or custom field types. This is only for example to help display automatic and custom fields.
-			//1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
-			//EditorGUILayout.LabelField("Automatic Field By Property Type");
-			//EditorGUILayout.PropertyField(MyGO);
-			EditorGUILayout.LabelField("Screenshot #"+i+" Properties");
-			EditorGUILayout.PropertyField(MyInt);
-            EditorGUILayout.PropertyField(MyFloat);
-            EditorGUILayout.PropertyField(MyVect3);
-            EditorGUILayout.Space();
+				// Choose to display automatic or custom field types. This is only for example to help display automatic and custom fields.
+				//1. Automatic, No customization <-- Choose me I'm automatic and easy to setup
+				//EditorGUILayout.LabelField("Automatic Field By Property Type");
+				//EditorGUILayout.PropertyField(MyGO);
+				EditorGUILayout.LabelField("Screenshot #" + i + " Properties");
+				EditorGUILayout.PropertyField(MyInt);
+				EditorGUILayout.PropertyField(MyFloat);
+				EditorGUILayout.PropertyField(MyVect3);
+				EditorGUILayout.Space();
 
-            //Remove this index from the List
-            EditorGUILayout.LabelField("Remove an index from the List<> with a button");
-            if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
-            {
-                ThisList.DeleteArrayElementAtIndex(i);
-            }
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-        }
+				//Remove this index from the List
+				EditorGUILayout.LabelField("Remove an index from the List<> with a button");
+				if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
+				{
+					ThisList.DeleteArrayElementAtIndex(i);
+				}
+				EditorGUILayout.Space();
+				EditorGUILayout.Space();
+				EditorGUILayout.Space();
+				EditorGUILayout.Space();
+			}
 
-		//Apply the changes to our list
-		GetTarget.ApplyModifiedProperties();
-		OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = ol.scs;
+			//Apply the changes to our list
+			GetTarget.ApplyModifiedProperties();
+			OL_GLOBAL_INFO.SCREENSHOT_PROPERTIES = ol.scs;
 		}
 	}
 }

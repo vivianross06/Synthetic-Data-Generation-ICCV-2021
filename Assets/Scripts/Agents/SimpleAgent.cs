@@ -138,10 +138,10 @@ public class SimpleAgent : Agent
         Camera.main.gameObject.transform.parent = rotFix.transform;
         rotFix.transform.position = transform.position;
         Camera.main.gameObject.transform.localPosition = localPos;
-        Camera.main.transform.localEulerAngles = new Vector3(0, OL_GLOBAL_INFO.PARALLAX_ANGLE, 0);
+        Camera.main.transform.localEulerAngles = new Vector3(OL_GLOBAL_INFO.PARALLAX_ANGLE[1], OL_GLOBAL_INFO.PARALLAX_ANGLE[0], 0);
 
         //StartCoroutine(SetCameraLookAngle());
-        
+
     }
 
     public void ResetAgent(List<List<Vector3>> regions)

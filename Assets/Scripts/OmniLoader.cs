@@ -30,9 +30,9 @@ public class OmniLoader : MonoBehaviour
     [HideInInspector] public int screenshotHeight = 256;
     [HideInInspector] public uint agentWaypoints = 40;
     [HideInInspector] public float stepDistance = 1.0f;
-    [HideInInspector] public Vector2 horizontalAngleRange = new Vector2(0, 0);
-    [HideInInspector] public Vector2 verticalAngleRange = new Vector2(0, 0);
-    [HideInInspector] public float parallaxAngle = 0;
+    [HideInInspector] public Vector2 horizontalAngleRange = Vector2.zero;
+    [HideInInspector] public Vector2 verticalAngleRange = Vector2.zero;
+    [HideInInspector] public Vector2 parallaxAngle = Vector2.zero;
     [HideInInspector] public bool seedFlythroughs = false;
     [HideInInspector] public string flythroughName = "";
     [HideInInspector] public float agentHeight = 1.5f;
@@ -55,13 +55,13 @@ public class OmniLoader : MonoBehaviour
         OL_GLOBAL_INFO.SCREENSHOT_HEIGHT = screenshotHeight;
         OL_GLOBAL_INFO.TOTAL_POINTS = Convert.ToInt32(agentWaypoints);
         OL_GLOBAL_INFO.DISTANCE_BETWEEN_SCREENSHOTS = stepDistance;
-        OL_GLOBAL_INFO.MIN_ROTATION_Y = horizontalAngleRange[0];
+        /*OL_GLOBAL_INFO.MIN_ROTATION_Y = horizontalAngleRange[0];
         OL_GLOBAL_INFO.MAX_ROTATION_Y = horizontalAngleRange[1];
         OL_GLOBAL_INFO.MIN_ROTATION_X = verticalAngleRange[0];
-        OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];
+        OL_GLOBAL_INFO.MAX_ROTATION_X = verticalAngleRange[1];*/
         OL_GLOBAL_INFO.PARALLAX_ANGLE = parallaxAngle;
         OL_GLOBAL_INFO.SEED = seedFlythroughs;
-	OL_GLOBAL_INFO.FTNAME = flythroughName;
+        OL_GLOBAL_INFO.FTNAME = flythroughName;
 
         if (AgentScript != null)
             agentObj.AddComponent(AgentScript.GetClass());
@@ -96,7 +96,7 @@ public class OmniLoader : MonoBehaviour
             sceneAgent = (Agent)agentObj.GetComponent(AgentScript.GetClass());
             sceneAgent.StartAgent(OL_GLOBAL_INFO.BBOX_LIST);
         }
-        
+
     }
 
     // Update is called once per frame
@@ -129,7 +129,7 @@ public class OmniLoader : MonoBehaviour
         }
         if (sceneAgent.agentDone == true)
         {
-	    foreach (Renderer rend in currentScene.GetComponentsInChildren<Renderer>())
+            foreach (Renderer rend in currentScene.GetComponentsInChildren<Renderer>())
             {
                 Texture.DestroyImmediate(rend.material.mainTexture, true);
             }
@@ -212,7 +212,7 @@ public static class OL_GLOBAL_INFO
     public static float MAX_ROTATION_X = 0f;
     public static float MIN_ROTATION_Y = 0f;
     public static float MAX_ROTATION_Y = 0f;
-    public static float PARALLAX_ANGLE = 0f;
+    public static Vector2 PARALLAX_ANGLE = Vector2.zero;
     public static float CAM_ROTATION_DURATION = 0.5f;
     public static float CAM_ROTATION_FREQUENCY = 0.5f;
     public static List<(Vector3, Vector3)> BBOX_LIST;
@@ -221,7 +221,8 @@ public static class OL_GLOBAL_INFO
     public static string FTNAME;
     public static int ROTATION_INCREMENT_DEGREES = 5;
 
-    public static void setLayerOfAll(GameObject root, int layer) {
+    public static void setLayerOfAll(GameObject root, int layer)
+    {
         root.layer = layer;
         foreach (Transform child in root.transform)
         {
