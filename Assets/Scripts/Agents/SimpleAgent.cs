@@ -132,13 +132,14 @@ public class SimpleAgent : Agent
         startPos = transform.position;
         elapsedTime = 0.0f;
         navMeshAgent.enabled = true;
-
+	GameObject prev = GameObject.Find("rotFix");
         GameObject rotFix = new GameObject("rotFix");
         rotFix.transform.parent = this.transform;
         Camera.main.gameObject.transform.parent = rotFix.transform;
         rotFix.transform.position = transform.position;
         Camera.main.gameObject.transform.localPosition = localPos;
         Camera.main.transform.localEulerAngles = new Vector3(OL_GLOBAL_INFO.PARALLAX_ANGLE[1], OL_GLOBAL_INFO.PARALLAX_ANGLE[0], 0);
+	Destroy(prev);
 
         //StartCoroutine(SetCameraLookAngle());
 
