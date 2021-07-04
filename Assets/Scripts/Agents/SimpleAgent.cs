@@ -20,7 +20,6 @@ public class SimpleAgent : Agent
     public float elapsedTime;
     private float camTimer;
     private bool isRotating = false;
-    private Vector3 x = Vector3.zero;
     // Update is called once per frame
     void Update()
     {
@@ -278,8 +277,6 @@ public class SimpleAgent : Agent
             if (navMeshAgent.destination != Vector3.positiveInfinity && navMeshAgent.destination != Vector3.negativeInfinity)
                 Gizmos.DrawSphere(navMeshAgent.destination, radius + 0.01f);
         }
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(x, 0.2f);
 
     }
 
@@ -310,7 +307,6 @@ public class SimpleAgent : Agent
 
     IEnumerator interpolateCornerRotations(Vector3 movement)
     {
-        x = movement;
         Quaternion nextRotation = (Vector3.Cross(movement, Vector3.up) == Vector3.zero ? Camera.main.gameObject.transform.parent.rotation : Quaternion.LookRotation(movement, Vector3.up));
         while (Quaternion.Angle(Camera.main.gameObject.transform.parent.rotation, nextRotation) > 0.5)
         {
