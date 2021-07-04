@@ -245,9 +245,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AgentScript: {fileID: 11500000, guid: 0fff482587ca05349a3459df0c7f082d, type: 3}
-  LoaderScript: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
+  LoaderScript: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
   loadMode: 2
-  loadOption: 1pXnuDYAj8r
+  loadOption: 0a0b9b45a1db29832dd84e80c1347854
   rotationDegrees: 2
   ScreenshotScript: {fileID: 11500000, guid: 506c4d4133ffb7c4cadba4bb139bcded, type: 3}
   scs:
@@ -263,7 +263,7 @@ MonoBehaviour:
   stepDistance: 0.1
   horizontalAngleRange: {x: 0, y: 0}
   verticalAngleRange: {x: 0, y: 0}
-  parallaxAngle: 0
+  parallaxAngle: {x: 0, y: 0}
   seedFlythroughs: 1
   flythroughName: 
   agentHeight: 1.5
@@ -290,9 +290,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 743955939}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e668e28abcfb0ae439f4ead584aba85b, type: 3}
+  m_Script: {fileID: 11500000, guid: b08b24322aa3c4df081f8c293eb070c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  house:
+    id: 
+    front: []
+    up: []
+    scaleToMeters: 0
+    levels: []
 --- !u!1 &959729371
 GameObject:
   m_ObjectHideFlags: 0

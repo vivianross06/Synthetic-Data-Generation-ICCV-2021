@@ -209,8 +209,8 @@ namespace UnitySUNCG
                     {
                         AddCollider(child.gameObject, type, node.modelId);
                     }*/
- 
-                    child.gameObject.layer = 8;
+                    if(type != "Ground")
+                        child.gameObject.layer = 8;
                     child.gameObject.transform.localScale = new Vector3(-1, 1, 1);
                     //if (type == "Wall") //This code makes the tops of the walls unwalkable, at the expense of the agent not being able to not pass through them.
                     //{
