@@ -1,3 +1,3 @@
-# ERSP-2021-Hollerer-Matterport
+# Synthetic-Data-Generation-ICCV-2021
 
-Assets/Scripts/Config.cs: update path to matterport data as necessary
+Assets/Scripts/Config.cs: update paths to datasets
